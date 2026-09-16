@@ -39,23 +39,36 @@ export default function Menu() {
     }
   }, [])
 
-  // Hide/show header on scroll direction
+  // Hide/show header on scroll — mobile safe
   useEffect(() => {
-    const onScroll = () => {
-      const currentY = window.scrollY
-      const diff = currentY - lastScrollY.current
+    let ticking = false
 
-      if (currentY < 80) {
-        setHeaderVisible(true)
-      } else if (diff > 3) {
-        // scrolling down — hide
-        setHeaderVisible(false)
-      } else if (diff < 0) {
-        // scrolling up — show immediately
-        setHeaderVisible(true)
-      }
-      lastScrollY.current = currentY
+    const onScroll = () => {
+      if (ticking) return
+      ticking = true
+      requestAnimationFrame(() => {
+        const currentY = window.scrollY
+        const diff = currentY - lastScrollY.current
+
+        // Ignore tiny changes (iOS address bar resize triggers scroll)
+        if (Math.abs(diff) < 4) {
+          ticking = false
+          return
+        }
+
+        if (currentY < 80) {
+          setHeaderVisible(true)
+        } else if (diff > 0) {
+          setHeaderVisible(false)
+        } else {
+          setHeaderVisible(true)
+        }
+
+        lastScrollY.current = currentY
+        ticking = false
+      })
     }
+
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])

@@ -11,13 +11,16 @@
 
   html {
     scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
   }
 
   body {
-    background-color: #F2E8D9;
+    background-color: #FBF5EB;
     color: #3D2B1F;
     font-family: 'Lato', sans-serif;
     -webkit-font-smoothing: antialiased;
+    overscroll-behavior-y: none;
+    -webkit-overflow-scrolling: touch;
   }
 
   [dir='rtl'] body,

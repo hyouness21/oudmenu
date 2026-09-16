@@ -1,12 +1,7 @@
-import { motion } from 'framer-motion'
 
 export default function DallahDecoration({ className = '' }) {
   return (
-    <motion.div
-      className={className}
-      animate={{ y: [0, -10, 0] }}
-      transition={{ duration: 4, repeat: Infinity, ease: 'easeInOut' }}
-    >
+    <div className={className}>
       <svg viewBox="0 0 200 260" fill="none" xmlns="http://www.w3.org/2000/svg">
         {/* Lid */}
         <ellipse cx="100" cy="42" rx="28" ry="8" fill="#7B956A" opacity="0.9" />
@@ -85,10 +80,7 @@ export default function DallahDecoration({ className = '' }) {
         </g>
 
         {/* Steam/pour drops */}
-        <motion.g
-          animate={{ opacity: [0, 1, 0], y: [0, -15, -30] }}
-          transition={{ duration: 2, repeat: Infinity, delay: 0.5 }}
-        >
+        <g opacity="0.5">
           <circle cx="21" cy="48" r="2.5" fill="#C9A84C" opacity="0.7" />
           <circle cx="26" cy="38" r="1.8" fill="#C9A84C" opacity="0.5" />
           <circle cx="17" cy="35" r="1.5" fill="#C9A84C" opacity="0.4" />
