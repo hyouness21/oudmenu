@@ -1,0 +1,102 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: #F2E8D9;
+    color: #3D2B1F;
+    font-family: 'Lato', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  [dir='rtl'] body,
+  [dir='rtl'] * {
+    font-family: 'Cairo', sans-serif;
+  }
+}
+
+@layer components {
+  .font-heading-en {
+    font-family: 'Playfair Display', serif;
+  }
+
+  .font-heading-ar {
+    font-family: 'Cairo', sans-serif;
+  }
+
+  /* Scrollbar styling */
+  ::-webkit-scrollbar {
+    width: 4px;
+    height: 4px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #F2E8D9;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #C9A84C;
+    border-radius: 2px;
+  }
+
+  /* Islamic geometric divider */
+  .divider-ornament {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #C9A84C;
+  }
+
+  .divider-ornament::before,
+  .divider-ornament::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, transparent, #C9A84C, transparent);
+  }
+
+  /* Hide scrollbar for category tabs */
+  .no-scrollbar::-webkit-scrollbar {
+    display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  /* Admin reusable components */
+  .input-field {
+    @apply w-full bg-surface border border-surface-2 rounded-xl px-4 py-2.5 text-text text-sm
+      focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all;
+  }
+
+  .btn-primary {
+    @apply bg-brown text-surface font-semibold py-2.5 px-4 rounded-xl
+      hover:bg-brown-light transition-colors disabled:opacity-60 text-sm;
+  }
+
+  .btn-secondary {
+    @apply bg-surface-2 text-text-muted font-medium py-2.5 px-4 rounded-xl
+      hover:bg-surface border border-surface-2 transition-colors text-sm;
+  }
+
+  .admin-label {
+    @apply text-text-muted text-xs font-medium uppercase tracking-wider mb-1.5 block;
+  }
+
+  .font-cairo {
+    font-family: 'Cairo', sans-serif;
+  }
+}
