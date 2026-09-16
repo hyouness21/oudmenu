@@ -28,47 +28,24 @@ export default function Menu() {
   const { categories, loading, itemsByCategory } = useMenu()
   const [activeCategory, setActiveCategory] = useState('all')
   const [headerVisible, setHeaderVisible] = useState(true)
-  const [headerHeight, setHeaderHeight] = useState(0)
-  const headerRef = useRef(null)
   const lastScrollY = useRef(0)
 
-  // Measure header height
-  useEffect(() => {
-    if (headerRef.current) {
-      setHeaderHeight(headerRef.current.offsetHeight)
-    }
-  }, [])
-
-  // Hide/show header on scroll — mobile safe
   useEffect(() => {
     let ticking = false
-
     const onScroll = () => {
       if (ticking) return
       ticking = true
       requestAnimationFrame(() => {
         const currentY = window.scrollY
         const diff = currentY - lastScrollY.current
-
-        // Ignore tiny changes (iOS address bar resize triggers scroll)
-        if (Math.abs(diff) < 4) {
-          ticking = false
-          return
-        }
-
-        if (currentY < 80) {
-          setHeaderVisible(true)
-        } else if (diff > 0) {
-          setHeaderVisible(false)
-        } else {
-          setHeaderVisible(true)
-        }
-
+        if (Math.abs(diff) < 4) { ticking = false; return }
+        if (currentY < 80) setHeaderVisible(true)
+        else if (diff > 0) setHeaderVisible(false)
+        else setHeaderVisible(true)
         lastScrollY.current = currentY
         ticking = false
       })
     }
-
     window.addEventListener('scroll', onScroll, { passive: true })
     return () => window.removeEventListener('scroll', onScroll)
   }, [])
@@ -78,71 +55,65 @@ export default function Menu() {
       ? categories
       : categories.filter((c) => c.id === activeCategory)
 
-  const tabsTop = headerVisible ? headerHeight : 0
-
   return (
     <div className="min-h-screen" style={{ background: '#FBF5EB' }}>
 
-      {/* Fixed header */}
-      <motion.div
-        ref={headerRef}
-        className="fixed top-0 left-0 right-0 z-30"
-        animate={{ y: headerVisible ? 0 : '-100%' }}
-        transition={{
-          duration: headerVisible ? 0.18 : 0.3,
-          ease: headerVisible ? 'easeOut' : 'easeIn',
-        }}
-      >
-        <MenuHeader />
-      </motion.div>
-
-      {/* Content pushed below header */}
-      <div style={{ paddingTop: headerHeight }}>
-
-        {/* Category tabs — sticky, moves up when header hides */}
-        {!loading && categories.length > 0 && (
-          <div
-            className="sticky z-20 transition-all duration-350"
-            style={{ top: tabsTop }}
-          >
-            <CategoryTabs
-              categories={categories}
-              activeId={activeCategory}
-              onSelect={setActiveCategory}
-            />
-          </div>
-        )}
-
-        {loading ? (
-          <LoadingSkeleton />
-        ) : (
-          <AnimatePresence mode="wait">
-            <motion.main
-              key={activeCategory}
-              initial={{ opacity: 0, y: 10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
-              transition={{ duration: 0.25 }}
-              className="pt-5 pb-20"
+      {/* Sticky top block: header collapses, tabs always visible */}
+      <div className="sticky top-0 z-30">
+        <AnimatePresence initial={false}>
+          {headerVisible && (
+            <motion.div
+              key="header"
+              initial={{ height: 0, opacity: 0 }}
+              animate={{ height: 'auto', opacity: 1 }}
+              exit={{ height: 0, opacity: 0 }}
+              transition={{ duration: 0.25, ease: 'easeInOut' }}
+              style={{ overflow: 'hidden' }}
             >
-              {visibleCategories.length === 0 ? (
-                <div className="flex flex-col items-center justify-center py-24 px-8 text-center">
-                  <div className="text-5xl mb-4 opacity-30">☕</div>
-                  <p className="text-text-muted text-sm">Menu coming soon</p>
-                </div>
-              ) : (
-                visibleCategories.map((cat) => (
-                  <CategorySection
-                    key={cat.id}
-                    category={cat}
-                    items={itemsByCategory(cat.id)}
-                  />
-                ))
-              )}
-            </motion.main>
-          </AnimatePresence>
+              <MenuHeader />
+            </motion.div>
+          )}
+        </AnimatePresence>
+
+        {!loading && categories.length > 0 && (
+          <CategoryTabs
+            categories={categories}
+            activeId={activeCategory}
+            onSelect={setActiveCategory}
+          />
         )}
       </div>
+
+      {/* Content */}
+      {loading ? (
+        <LoadingSkeleton />
+      ) : (
+        <AnimatePresence mode="wait">
+          <motion.main
+            key={activeCategory}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -10 }}
+            transition={{ duration: 0.25 }}
+            className="pt-5 pb-20"
+          >
+            {visibleCategories.length === 0 ? (
+              <div className="flex flex-col items-center justify-center py-24 px-8 text-center">
+                <div className="text-5xl mb-4 opacity-30">☕</div>
+                <p className="text-text-muted text-sm">Menu coming soon</p>
+              </div>
+            ) : (
+              visibleCategories.map((cat) => (
+                <CategorySection
+                  key={cat.id}
+                  category={cat}
+                  items={itemsByCategory(cat.id)}
+                />
+              ))
+            )}
+          </motion.main>
+        </AnimatePresence>
+      )}
 
       <FloatingCurrencyToggle />
 

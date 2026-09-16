@@ -84,8 +84,8 @@ export default function DallahDecoration({ className = '' }) {
           <circle cx="21" cy="48" r="2.5" fill="#C9A84C" opacity="0.7" />
           <circle cx="26" cy="38" r="1.8" fill="#C9A84C" opacity="0.5" />
           <circle cx="17" cy="35" r="1.5" fill="#C9A84C" opacity="0.4" />
-        </motion.g>
+        </g>
       </svg>
-    </motion.div>
+    </div>
   )
 }
