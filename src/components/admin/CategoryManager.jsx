@@ -1,46 +1,83 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useMenu } from '../../contexts/MenuContext'
+import { storage } from '../../firebase/config'
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage'
 
 function CategoryForm({ initial, onSave, onCancel }) {
   const [nameEn, setNameEn] = useState(initial?.name_en ?? '')
   const [nameAr, setNameAr] = useState(initial?.name_ar ?? '')
+  const [imageFile, setImageFile] = useState(null)
+  const [imagePreview, setImagePreview] = useState(initial?.imageUrl ?? '')
   const [saving, setSaving] = useState(false)
+  const [error, setError] = useState('')
+  const fileRef = useRef()
+
+  const handleImage = (e) => {
+    const file = e.target.files[0]
+    if (!file) return
+    setImageFile(file)
+    setImagePreview(URL.createObjectURL(file))
+  }
+
+  const removeImage = () => {
+    setImageFile(null)
+    setImagePreview('')
+    if (fileRef.current) fileRef.current.value = ''
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
-    await onSave({ name_en: nameEn, name_ar: nameAr })
-    setSaving(false)
+    setError('')
+    try {
+      let imageUrl = initial?.imageUrl ?? ''
+      if (imageFile) {
+        const storageRef = ref(storage, `categories/${Date.now()}_${imageFile.name}`)
+        await uploadBytes(storageRef, imageFile)
+        imageUrl = await getDownloadURL(storageRef)
+      } else if (!imagePreview) {
+        imageUrl = ''
+      }
+      await onSave({ name_en: nameEn, name_ar: nameAr, imageUrl })
+    } catch (err) {
+      setError(err.message || 'Upload failed. Check Firebase Storage rules.')
+      setSaving(false)
+    }
   }
 
   return (
     <form onSubmit={handleSubmit} className="bg-bg rounded-2xl p-4 border border-surface-2 flex flex-col gap-3">
-      <input
-        value={nameEn}
-        onChange={(e) => setNameEn(e.target.value)}
-        placeholder="Name (English)"
-        required
-        className="input-field"
-      />
-      <input
-        value={nameAr}
-        onChange={(e) => setNameAr(e.target.value)}
-        placeholder="الاسم (عربي)"
-        required
-        dir="rtl"
-        className="input-field font-cairo"
-      />
+      <input value={nameEn} onChange={(e) => setNameEn(e.target.value)} placeholder="Name (English)" required className="input-field" />
+      <input value={nameAr} onChange={(e) => setNameAr(e.target.value)} placeholder="الاسم (عربي)" required dir="rtl" className="input-field font-cairo" />
+
+      {/* Category image */}
+      <div>
+        <p className="admin-label">Category Photo (shown in carousel)</p>
+        {imagePreview ? (
+          <div className="relative w-full h-32 rounded-xl overflow-hidden border border-surface-2">
+            <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
+            <button type="button" onClick={removeImage}
+              className="absolute top-2 right-2 bg-black/50 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm hover:bg-black/70">
+              ✕
+            </button>
+          </div>
+        ) : (
+          <label className="flex flex-col items-center justify-center w-full h-24 rounded-xl border-2 border-dashed border-surface-2 cursor-pointer hover:border-gold/40 transition-colors">
+            <span className="text-text-muted text-sm">Click to upload image</span>
+            <span className="text-text-light text-xs mt-1">JPG, PNG, WEBP</span>
+            <input ref={fileRef} type="file" accept="image/*" onChange={handleImage} className="hidden" />
+          </label>
+        )}
+      </div>
+
+      {error && <p className="text-red-500 text-xs px-1">{error}</p>}
       <div className="flex gap-2">
-        <button type="submit" disabled={saving} className="btn-primary flex-1">
-          {saving ? 'Saving...' : 'Save'}
-        </button>
-        <button type="button" onClick={onCancel} className="btn-secondary flex-1">
-          Cancel
-        </button>
+        <button type="submit" disabled={saving} className="btn-primary flex-1">{saving ? 'Saving...' : 'Save'}</button>
+        <button type="button" onClick={onCancel} className="btn-secondary flex-1">Cancel</button>
       </div>
     </form>
   )
@@ -50,16 +87,17 @@ function SortableCategory({ cat, onEdit, onDelete }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: cat.id })
   const [confirmDelete, setConfirmDelete] = useState(false)
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.5 : 1,
-  }
+  const style = { transform: CSS.Transform.toString(transform), transition, opacity: isDragging ? 0.5 : 1 }
 
   return (
     <div ref={setNodeRef} style={style} className="bg-surface rounded-xl border border-surface-2 flex items-center gap-3 px-4 py-3">
-      {/* Drag handle */}
       <span {...attributes} {...listeners} className="text-text-light cursor-grab active:cursor-grabbing text-lg select-none">⠿</span>
+
+      {cat.imageUrl && (
+        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
+          <img src={cat.imageUrl} alt={cat.name_en} className="w-full h-full object-cover" />
+        </div>
+      )}
 
       <div className="flex-1 min-w-0">
         <p className="text-text font-medium text-sm">{cat.name_en}</p>
@@ -100,9 +138,7 @@ export default function CategoryManager() {
     <div className="p-6 max-w-2xl">
       <div className="flex items-center justify-between mb-6">
         <h2 className="font-playfair text-brown text-2xl font-bold">Categories</h2>
-        <button onClick={() => { setShowAdd(true); setEditing(null) }} className="btn-primary text-sm">
-          + Add Category
-        </button>
+        <button onClick={() => { setShowAdd(true); setEditing(null) }} className="btn-primary text-sm">+ Add Category</button>
       </div>
 
       <AnimatePresence>
@@ -129,12 +165,7 @@ export default function CategoryManager() {
                     />
                   </motion.div>
                 ) : (
-                  <SortableCategory
-                    key={cat.id}
-                    cat={cat}
-                    onEdit={(c) => { setEditing(c); setShowAdd(false) }}
-                    onDelete={deleteCategory}
-                  />
+                  <SortableCategory key={cat.id} cat={cat} onEdit={(c) => { setEditing(c); setShowAdd(false) }} onDelete={deleteCategory} />
                 )
               ))}
             </div>
