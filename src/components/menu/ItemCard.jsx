@@ -3,8 +3,8 @@ import { useLanguage } from '../../contexts/LanguageContext'
 import { useCurrency } from '../../contexts/CurrencyContext'
 
 const statusConfig = {
-  unavailable: { en: 'Unavailable', ar: 'غير متوفر', classes: 'bg-text-light/20 text-text-light' },
-  coming_soon: { en: 'Coming Soon', ar: 'قريباً', classes: 'bg-gold/20 text-gold border border-gold/40' },
+  unavailable: { en: 'Unavailable', ar: 'غير متوفر', classes: 'bg-black/50 text-white/80' },
+  coming_soon: { en: 'Coming Soon', ar: 'قريباً', classes: 'bg-gold text-brown font-semibold' },
 }
 
 export default function ItemCard({ item, index }) {
@@ -20,73 +20,57 @@ export default function ItemCard({ item, index }) {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 16 }}
+      initial={{ opacity: 0, y: 12 }}
       animate={{ opacity: 1, y: 0 }}
-      transition={{ duration: 0.3, delay: Math.min(index * 0.05, 0.3), ease: 'easeOut' }}
-      className={`relative bg-white rounded-2xl overflow-hidden border transition-all duration-300
-        ${isUnavailable ? 'opacity-50' : 'border-surface-2 hover:border-gold/40 hover:shadow-lg hover:shadow-gold/10'}
-        ${isComingSoon ? 'border-gold/20' : ''}
+      transition={{ duration: 0.25, delay: Math.min(index * 0.04, 0.2), ease: 'easeOut' }}
+      className={`bg-white rounded-2xl overflow-hidden border border-surface-2 transition-all duration-300
+        ${isUnavailable ? 'opacity-50' : 'hover:shadow-lg hover:border-gold/30'}
       `}
     >
-      {/* Item image */}
-      {hasImage && (
-        <div className="w-full h-40 overflow-hidden">
-          <motion.img
-            src={item.imageUrl}
-            alt={name}
-            className="w-full h-full object-cover"
-            whileHover={{ scale: 1.05 }}
-            transition={{ duration: 0.4 }}
-          />
-          <div className="absolute inset-0 h-40 bg-gradient-to-b from-transparent via-transparent to-surface/80" />
-        </div>
-      )}
-
-      <div className="p-4">
-        {/* Status badge */}
+      {/* Image */}
+      <div className="relative h-36 overflow-hidden bg-surface">
+        {hasImage ? (
+          <img src={item.imageUrl} alt={name} className="w-full h-full object-cover" />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface to-surface-2">
+            <span className="text-4xl opacity-10">☕</span>
+          </div>
+        )}
+        {hasImage && <div className="absolute inset-0 bg-gradient-to-t from-black/25 to-transparent" />}
         {badge && (
-          <span className={`absolute top-3 ${isRTL ? 'left-3' : 'right-3'} text-xs font-medium px-2.5 py-1 rounded-full ${badge.classes}`}>
+          <span className={`absolute top-2 ${isRTL ? 'right-2' : 'left-2'} text-xs px-2 py-0.5 rounded-full ${badge.classes}`}>
             {lang === 'ar' ? badge.ar : badge.en}
           </span>
         )}
-
-        <div className={`flex justify-between items-start gap-3 ${isRTL ? 'flex-row-reverse' : ''}`}>
-          <div className="flex-1 min-w-0">
-            <h3 className={`font-semibold text-text text-base leading-snug mb-1 ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
-              {name}
-            </h3>
-            {description && (
-              <p className={`text-text-muted text-sm leading-relaxed ${lang === 'ar' ? 'font-cairo' : ''}`}>
-                {description}
-              </p>
-            )}
-          </div>
-
-          {!isComingSoon && (
-            <div className={`flex-shrink-0 ${isRTL ? 'text-left' : 'text-right'}`}>
-              <AnimatePresence mode="wait">
-                <motion.div
-                  key={currency}
-                  initial={{ opacity: 0, y: -6 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: 6 }}
-                  transition={{ duration: 0.18 }}
-                  className="bg-brown/8 rounded-xl px-3 py-1.5 text-center"
-                >
-                  <span className="text-brown font-bold text-sm whitespace-nowrap">
-                    {format(item.price, item.priceCurrency)}
-                  </span>
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          )}
-        </div>
       </div>
 
-      {/* Bottom gold accent line */}
-      {!isUnavailable && !isComingSoon && (
-        <div className="h-0.5 bg-gradient-to-r from-transparent via-gold/30 to-transparent" />
-      )}
+      {/* Content */}
+      <div className={`p-3 ${isRTL ? 'text-right' : ''}`}>
+        <h3 className={`font-semibold text-text text-sm leading-snug ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
+          {name}
+        </h3>
+        {description && (
+          <p className={`text-text-muted text-xs mt-0.5 leading-relaxed line-clamp-2 ${lang === 'ar' ? 'font-cairo' : ''}`}>
+            {description}
+          </p>
+        )}
+        {!isComingSoon && (
+          <AnimatePresence mode="wait">
+            <motion.p
+              key={currency}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+              className="text-brown font-bold text-sm mt-2"
+            >
+              {format(item.price, item.priceCurrency)}
+            </motion.p>
+          </AnimatePresence>
+        )}
+      </div>
+
+      <div className="h-0.5 bg-gradient-to-r from-transparent via-gold/25 to-transparent" />
     </motion.div>
   )
 }
