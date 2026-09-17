@@ -1,41 +1,75 @@
-import { useRef, useState } from 'react'
+import { useRef, useEffect } from 'react'
 import { useLanguage } from '../../contexts/LanguageContext'
+
+const REPS = 6   // enough to fill any screen size
+const SPEED = 0.6 // px per frame
 
 export default function CategoryCarousel({ categories, onSelect }) {
   const { lang } = useLanguage()
-  const [paused, setPaused] = useState(false)
+  const trackRef = useRef(null)
+  const posRef = useRef(0)
+  const pausedRef = useRef(false)
+  const rafRef = useRef(null)
+  const oneSetWidthRef = useRef(0)
   const touchStartX = useRef(0)
+
+  const track = Array(REPS).fill(categories).flat()
+
+  useEffect(() => {
+    const el = trackRef.current
+    if (!el || !categories.length) return
+
+    // Measure width of one set after layout
+    requestAnimationFrame(() => {
+      oneSetWidthRef.current = el.scrollWidth / REPS
+    })
+
+    const animate = () => {
+      if (!pausedRef.current && oneSetWidthRef.current > 0) {
+        posRef.current += SPEED
+        if (posRef.current >= oneSetWidthRef.current) {
+          posRef.current -= oneSetWidthRef.current
+        }
+        el.style.transform = `translateX(-${posRef.current}px)`
+      }
+      rafRef.current = requestAnimationFrame(animate)
+    }
+
+    rafRef.current = requestAnimationFrame(animate)
+
+    const pause = () => { pausedRef.current = true }
+    const resume = () => { pausedRef.current = false }
+
+    el.addEventListener('mouseenter', pause)
+    el.addEventListener('mouseleave', resume)
+    el.addEventListener('touchstart', (e) => {
+      touchStartX.current = e.touches[0].clientX
+      pause()
+    }, { passive: true })
+    el.addEventListener('touchend', (e) => {
+      const dx = Math.abs(e.changedTouches[0].clientX - touchStartX.current)
+      if (dx < 8) {
+        const btn = e.target.closest('[data-catid]')
+        if (btn) onSelect(btn.dataset.catid)
+      }
+      setTimeout(resume, 400)
+    }, { passive: true })
+
+    return () => {
+      cancelAnimationFrame(rafRef.current)
+      el.removeEventListener('mouseenter', pause)
+      el.removeEventListener('mouseleave', resume)
+    }
+  }, [categories])
 
   if (!categories.length) return null
 
-  // Duplicate for seamless infinite loop
-  const track = [...categories, ...categories]
-  const duration = Math.max(categories.length * 5, 18)
-
-  const handleTouchStart = (e) => {
-    touchStartX.current = e.touches[0].clientX
-    setPaused(true)
-  }
-
-  const handleTouchEnd = (e) => {
-    const dx = Math.abs(e.changedTouches[0].clientX - touchStartX.current)
-    // If barely moved = tap, fire select
-    if (dx < 8) {
-      const el = e.target.closest('[data-catid]')
-      if (el) onSelect(el.dataset.catid)
-    }
-    setTimeout(() => setPaused(false), 600)
-  }
-
   return (
-    <div className="overflow-hidden">
+    <div className="overflow-hidden w-full">
       <div
-        className={`carousel-track${paused ? ' paused' : ''}`}
-        style={{ '--carousel-duration': `${duration}s` }}
-        onMouseEnter={() => setPaused(true)}
-        onMouseLeave={() => setPaused(false)}
-        onTouchStart={handleTouchStart}
-        onTouchEnd={handleTouchEnd}
+        ref={trackRef}
+        className="flex"
+        style={{ willChange: 'transform' }}
       >
         {track.map((cat, i) => {
           const name = lang === 'ar' ? cat.name_ar : cat.name_en
@@ -44,22 +78,17 @@ export default function CategoryCarousel({ categories, onSelect }) {
               key={`${cat.id}-${i}`}
               data-catid={cat.id}
               onClick={() => onSelect(cat.id)}
-              className="flex-shrink-0 w-40 h-52 relative rounded-2xl overflow-hidden mx-2 focus:outline-none"
+              className="flex-shrink-0 w-44 h-56 relative rounded-2xl overflow-hidden mx-2 focus:outline-none"
               style={{ WebkitTapHighlightColor: 'transparent' }}
             >
-              {/* Image or placeholder */}
               {cat.imageUrl ? (
                 <img src={cat.imageUrl} alt={name} className="w-full h-full object-cover" />
               ) : (
-                <div className="w-full h-full bg-gradient-to-br from-brown/80 to-[#120C05]" />
+                <div className="w-full h-full bg-gradient-to-br from-[#2D1E14] to-[#120C05]" />
               )}
-
-              {/* Dark gradient overlay */}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
-
-              {/* Category name */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent" />
               <div className="absolute bottom-0 left-0 right-0 p-3 text-center">
-                <p className={`text-white font-bold text-sm drop-shadow ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
+                <p className={`text-white font-bold text-sm drop-shadow-lg ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
                   {name}
                 </p>
               </div>
