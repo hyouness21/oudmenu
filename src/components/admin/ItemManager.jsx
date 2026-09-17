@@ -57,17 +57,24 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
     if (fileRef.current) fileRef.current.value = ''
   }
 
+  const [error, setError] = useState('')
+
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
-    let imageUrl = form.imageUrl
-    if (imageFile) {
-      const storageRef = ref(storage, `items/${Date.now()}_${imageFile.name}`)
-      await uploadBytes(storageRef, imageFile)
-      imageUrl = await getDownloadURL(storageRef)
+    setError('')
+    try {
+      let imageUrl = form.imageUrl
+      if (imageFile) {
+        const storageRef = ref(storage, `items/${Date.now()}_${imageFile.name}`)
+        await uploadBytes(storageRef, imageFile)
+        imageUrl = await getDownloadURL(storageRef)
+      }
+      await onSave({ ...form, price: parseFloat(form.price), imageUrl })
+    } catch (err) {
+      setError(err.message || 'Upload failed. Check Firebase Storage rules.')
+      setSaving(false)
     }
-    await onSave({ ...form, price: parseFloat(form.price), imageUrl })
-    setSaving(false)
   }
 
   return (
@@ -115,6 +122,7 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
         )}
       </div>
 
+      {error && <p className="text-red-500 text-xs px-1">{error}</p>}
       <div className="flex gap-2">
         <button type="submit" disabled={saving} className="btn-primary flex-1">{saving ? 'Saving...' : 'Save'}</button>
         <button type="button" onClick={onCancel} className="btn-secondary flex-1">Cancel</button>
