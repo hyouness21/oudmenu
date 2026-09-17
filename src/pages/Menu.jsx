@@ -76,6 +76,7 @@ export default function Menu() {
       </div>
 
       {/* Content */}
+      <div className="menu-content">
       {loading ? (
         <LoadingSkeleton />
       ) : (
@@ -105,6 +106,7 @@ export default function Menu() {
           </motion.main>
         </AnimatePresence>
       )}
+      </div>
 
       <FloatingCurrencyToggle />
 
