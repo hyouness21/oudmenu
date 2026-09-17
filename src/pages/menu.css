@@ -1,12 +1,12 @@
 .menu-header-wrapper {
   overflow: hidden;
-  max-height: 420px;
-  transition: max-height 0.3s ease-in-out, opacity 0.25s ease-in-out;
+  height: var(--header-h, 320px);
+  transition: height 0.32s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.25s ease;
   opacity: 1;
 }
 
 .menu-header-wrapper.header-hidden {
-  max-height: 0;
+  height: 0 !important;
   opacity: 0;
 }
 

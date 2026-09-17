@@ -30,6 +30,19 @@ export default function Menu() {
   const [activeCategory, setActiveCategory] = useState('all')
   const [headerVisible, setHeaderVisible] = useState(true)
   const lastScrollY = useRef(0)
+  const headerWrapperRef = useRef(null)
+
+  useEffect(() => {
+    const el = headerWrapperRef.current
+    if (!el) return
+    const update = () => {
+      document.documentElement.style.setProperty('--header-h', el.scrollHeight + 'px')
+    }
+    update()
+    const ro = new ResizeObserver(update)
+    ro.observe(el)
+    return () => ro.disconnect()
+  }, [])
 
   useEffect(() => {
     let ticking = false
@@ -62,7 +75,7 @@ export default function Menu() {
 
       {/* Sticky top block: header collapses, tabs always visible */}
       <div className="sticky top-0 z-30">
-        <div className={`menu-header-wrapper${headerVisible ? '' : ' header-hidden'}`}>
+        <div ref={headerWrapperRef} className={`menu-header-wrapper${headerVisible ? '' : ' header-hidden'}`}>
           <MenuHeader />
         </div>
 

@@ -14,9 +14,17 @@ export default function MenuHeader() {
     <header className="relative bg-brown overflow-hidden">
       <IslamicPattern opacity={0.05} color="#C9A84C" />
 
-      {/* Ambient glow */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-gold/10 blur-3xl pointer-events-none" />
-      <div className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-green/10 blur-3xl pointer-events-none" />
+      {/* Ambient glow — floating up/down */}
+      <motion.div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-96 rounded-full bg-gold/10 blur-3xl pointer-events-none"
+        animate={{ y: [0, -18, 0, 18, 0] }}
+        transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
+      />
+      <motion.div
+        className="absolute bottom-0 right-0 w-64 h-64 rounded-full bg-green/10 blur-3xl pointer-events-none"
+        animate={{ y: [0, 16, 0, -16, 0] }}
+        transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
+      />
 
       {/* Top controls */}
       <div className={`relative flex justify-between items-center px-5 pt-5 ${isRTL ? 'flex-row-reverse' : ''}`}>
