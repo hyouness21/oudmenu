@@ -16,7 +16,7 @@ export default function CategoryTabs({ categories, activeId, onSelect }) {
   }
 
   return (
-    <div className="sticky top-0 z-20 border-b border-gold/15" style={{ background: '#FBF5EB' }}>
+    <div className="border-b border-gold/15" style={{ background: '#FBF5EB' }}>
       {/* Gold top line */}
       <div className="h-px bg-gradient-to-r from-transparent via-gold/40 to-transparent" />
 

@@ -53,52 +53,37 @@ export default function MenuHeader() {
       {/* Main hero area */}
       <div className="relative flex flex-col items-center pt-4 pb-10 px-6">
         {/* Dallah left */}
-        <motion.div
-          className="absolute left-0 bottom-0 opacity-20"
-          initial={{ x: -40, opacity: 0 }}
-          animate={{ x: 0, opacity: 0.2 }}
-          transition={{ duration: 1, delay: 0.3 }}
-        >
+        <div className="absolute left-0 bottom-0 opacity-20">
           <DallahDecoration className="w-28 -scale-x-100" />
-        </motion.div>
+        </div>
 
         {/* Dallah right */}
-        <motion.div
-          className="absolute right-0 bottom-0 opacity-20"
-          initial={{ x: 40, opacity: 0 }}
-          animate={{ x: 0, opacity: 0.2 }}
-          transition={{ duration: 1, delay: 0.5 }}
-        >
+        <div className="absolute right-0 bottom-0 opacity-20">
           <DallahDecoration className="w-28" />
-        </motion.div>
+        </div>
 
         {/* Center dallah */}
-        <motion.div
-          className="absolute right-1/2 translate-x-1/2 bottom-2 opacity-10"
-          initial={{ scale: 0.8, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.1 }}
-          transition={{ duration: 1.2, delay: 0.2 }}
-        >
+        <div className="absolute right-1/2 translate-x-1/2 bottom-2 opacity-10">
           <DallahDecoration className="w-56" />
-        </motion.div>
+        </div>
 
         {/* Logo */}
         <motion.div
-          initial={{ opacity: 0, y: 30, scale: 0.9 }}
+          initial={{ opacity: 0, y: 16, scale: 0.95 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+          transition={{ duration: 0.4, ease: 'easeOut' }}
           className="relative z-10 mb-3"
         >
           <Link to="/admin">
-          <Logo variant="white" className="w-56 max-w-xs" />
-        </Link>
+            <Logo variant="white" className="w-56 max-w-xs" />
+          </Link>
         </motion.div>
 
         {/* Tagline */}
         <motion.p
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.6, delay: 0.5 }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.4, delay: 0.2 }}
           className={`relative z-10 text-white/50 text-xs tracking-[0.25em] uppercase font-lato ${lang === 'ar' ? 'font-cairo tracking-normal' : ''}`}
         >
           {lang === 'ar' ? 'قائمة الطعام والمشروبات' : 'Coffee & More'}

@@ -5,6 +5,7 @@ import MenuHeader from '../components/menu/MenuHeader'
 import CategoryTabs from '../components/menu/CategoryTabs'
 import CategorySection from '../components/menu/CategorySection'
 import FloatingCurrencyToggle from '../components/menu/FloatingCurrencyToggle'
+import './menu.css'
 
 function LoadingSkeleton() {
   return (
@@ -25,7 +26,7 @@ function LoadingSkeleton() {
 }
 
 export default function Menu() {
-  const { categories, loading, itemsByCategory } = useMenu()
+  const { categories, loading, categoriesLoading, itemsByCategory } = useMenu()
   const [activeCategory, setActiveCategory] = useState('all')
   const [headerVisible, setHeaderVisible] = useState(true)
   const lastScrollY = useRef(0)
@@ -39,9 +40,10 @@ export default function Menu() {
         const currentY = window.scrollY
         const diff = currentY - lastScrollY.current
         if (Math.abs(diff) < 4) { ticking = false; return }
+        const atBottom = currentY + window.innerHeight >= document.body.scrollHeight - 80
         if (currentY < 80) setHeaderVisible(true)
         else if (diff > 0) setHeaderVisible(false)
-        else setHeaderVisible(true)
+        else if (!atBottom) setHeaderVisible(true)
         lastScrollY.current = currentY
         ticking = false
       })
@@ -60,22 +62,11 @@ export default function Menu() {
 
       {/* Sticky top block: header collapses, tabs always visible */}
       <div className="sticky top-0 z-30">
-        <AnimatePresence initial={false}>
-          {headerVisible && (
-            <motion.div
-              key="header"
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: 'auto', opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.25, ease: 'easeInOut' }}
-              style={{ overflow: 'hidden' }}
-            >
-              <MenuHeader />
-            </motion.div>
-          )}
-        </AnimatePresence>
+        <div className={`menu-header-wrapper${headerVisible ? '' : ' header-hidden'}`}>
+          <MenuHeader />
+        </div>
 
-        {!loading && categories.length > 0 && (
+        {!categoriesLoading && categories.length > 0 && (
           <CategoryTabs
             categories={categories}
             activeId={activeCategory}

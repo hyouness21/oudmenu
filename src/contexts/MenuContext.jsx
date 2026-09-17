@@ -10,12 +10,16 @@ const MenuContext = createContext()
 export function MenuProvider({ children }) {
   const [categories, setCategories] = useState([])
   const [items, setItems] = useState([])
+  const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
     const unsub1 = onSnapshot(
       query(collection(db, 'categories'), orderBy('order')),
-      (snap) => setCategories(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+      (snap) => {
+        setCategories(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
+        setCategoriesLoading(false)
+      }
     )
     const unsub2 = onSnapshot(
       query(collection(db, 'items'), orderBy('order')),
@@ -63,7 +67,7 @@ export function MenuProvider({ children }) {
 
   return (
     <MenuContext.Provider value={{
-      categories, items, loading,
+      categories, items, loading, categoriesLoading,
       addCategory, updateCategory, deleteCategory, reorderCategories,
       addItem, updateItem, deleteItem, reorderItems, itemsByCategory,
     }}>
