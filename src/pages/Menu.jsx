@@ -31,6 +31,8 @@ export default function Menu() {
   const [headerVisible, setHeaderVisible] = useState(true)
   const lastScrollY = useRef(0)
   const headerWrapperRef = useRef(null)
+  const headerVisibleRef = useRef(true)
+  const lastToggleRef = useRef(0)
 
   useEffect(() => {
     const el = headerWrapperRef.current
@@ -52,11 +54,22 @@ export default function Menu() {
       requestAnimationFrame(() => {
         const currentY = window.scrollY
         const diff = currentY - lastScrollY.current
-        if (Math.abs(diff) < 4) { ticking = false; return }
+        if (Math.abs(diff) < 10) { ticking = false; return }
+
+        const now = Date.now()
         const atBottom = currentY + window.innerHeight >= document.body.scrollHeight - 80
-        if (currentY < 80) setHeaderVisible(true)
-        else if (diff > 0) setHeaderVisible(false)
-        else if (!atBottom) setHeaderVisible(true)
+
+        let next = headerVisibleRef.current
+        if (currentY < 80) next = true
+        else if (diff > 0 && !atBottom) next = false
+        else if (diff < 0 && !atBottom) next = true
+
+        if (next !== headerVisibleRef.current && now - lastToggleRef.current > 350) {
+          headerVisibleRef.current = next
+          lastToggleRef.current = now
+          setHeaderVisible(next)
+        }
+
         lastScrollY.current = currentY
         ticking = false
       })
@@ -74,7 +87,7 @@ export default function Menu() {
     <div className="min-h-screen" style={{ background: '#FBF5EB' }}>
 
       {/* Sticky top block: header collapses, tabs always visible */}
-      <div className="sticky top-0 z-30">
+      <div className="menu-sticky sticky top-0 z-30">
         <div ref={headerWrapperRef} className={`menu-header-wrapper${headerVisible ? '' : ' header-hidden'}`}>
           <MenuHeader />
         </div>

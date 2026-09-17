@@ -10,6 +10,11 @@
   opacity: 0;
 }
 
+/* Disable scroll anchoring on the sticky block so layout shifts don't retrigger scroll events */
+.menu-sticky {
+  overflow-anchor: none;
+}
+
 /* Prevent Framer Motion stacking contexts from escaping above the sticky header */
 .menu-content {
   position: relative;
