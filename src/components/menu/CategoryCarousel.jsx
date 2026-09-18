@@ -113,7 +113,7 @@ export default function CategoryCarousel({ categories, onSelect }) {
   if (!categories.length) return null
 
   return (
-    <div className="overflow-hidden w-full" style={{ cursor: 'grab' }}>
+    <div className="overflow-hidden w-full" style={{ cursor: 'grab' }} dir="ltr">
       <div ref={trackRef} className="flex" style={{ willChange: 'transform' }}>
         {track.map((cat, i) => {
           const name = lang === 'ar' ? cat.name_ar : cat.name_en
