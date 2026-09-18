@@ -1,0 +1,83 @@
+import { AnimatePresence, motion } from 'framer-motion'
+import { useLanguage } from '../../contexts/LanguageContext'
+import { useCurrency } from '../../contexts/CurrencyContext'
+
+function BestSellerCard({ item, index }) {
+  const { lang } = useLanguage()
+  const { format, currency } = useCurrency()
+  const name = lang === 'ar' ? item.name_ar : item.name_en
+  const description = lang === 'ar' ? item.description_ar : item.description_en
+
+  return (
+    <motion.div
+      initial={{ opacity: 0, y: 10 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.25, delay: index * 0.07 }}
+      className="bg-white rounded-2xl p-3 flex flex-col items-center text-center shadow-sm border border-surface-2"
+    >
+      <div className="w-20 h-20 rounded-full overflow-hidden bg-surface mb-3 flex-shrink-0">
+        {item.imageUrl ? (
+          <img
+            src={item.imageUrl}
+            alt={name}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: `${item.imagePosition?.x ?? 50}% ${item.imagePosition?.y ?? 50}%` }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center bg-surface-2">
+            <span className="text-2xl opacity-20">☕</span>
+          </div>
+        )}
+      </div>
+
+      <h3 className={`font-semibold text-brown text-xs leading-snug mb-1 line-clamp-2 ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
+        {name}
+      </h3>
+
+      {description && (
+        <p className={`text-text-muted text-xs leading-relaxed line-clamp-2 mb-2 ${lang === 'ar' ? 'font-cairo' : ''}`}>
+          {description}
+        </p>
+      )}
+
+      <AnimatePresence mode="wait">
+        <motion.p
+          key={currency}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.15 }}
+          className="text-brown font-bold text-xs mt-auto"
+        >
+          {format(item.price, item.priceCurrency)}
+        </motion.p>
+      </AnimatePresence>
+    </motion.div>
+  )
+}
+
+export default function BestSellers({ items }) {
+  const { lang } = useLanguage()
+  const bestSellers = items.filter((i) => i.isBestSeller).slice(0, 3)
+
+  if (!bestSellers.length) return null
+
+  return (
+    <section className="bg-[#FBF5EB] py-10 px-5">
+      <div className="text-center mb-6">
+        <p className={`text-text-muted text-xs tracking-widest uppercase font-lato mb-1 ${lang === 'ar' ? 'font-cairo tracking-normal' : ''}`}>
+          {lang === 'ar' ? '— الأكثر طلباً —' : '— Best Sellers —'}
+        </p>
+        <p className={`text-text-light text-xs mt-1 ${lang === 'ar' ? 'font-cairo' : 'font-lato'}`}>
+          {lang === 'ar' ? 'الأصناف الأكثر حباً لدى زبائننا' : 'Our most popular picks loved by everyone'}
+        </p>
+      </div>
+
+      <div className="grid grid-cols-3 gap-2 max-w-sm mx-auto">
+        {bestSellers.map((item, i) => (
+          <BestSellerCard key={item.id} item={item} index={i} />
+        ))}
+      </div>
+    </section>
+  )
+}

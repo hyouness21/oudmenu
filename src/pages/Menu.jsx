@@ -11,6 +11,7 @@ import DallahDecoration from '../components/menu/DallahDecoration'
 import IslamicPattern from '../components/shared/IslamicPattern'
 import Logo from '../components/shared/Logo'
 import AboutSection from '../components/menu/AboutSection'
+import BestSellers from '../components/menu/BestSellers'
 import './menu.css'
 
 /* ── Hero ──────────────────────────────────────────────── */
@@ -178,7 +179,7 @@ function CategoryPage({ category, items, lang, isRTL, onBack }) {
 
 /* ── Main ──────────────────────────────────────────────── */
 export default function Menu() {
-  const { categories, loading, categoriesLoading, itemsByCategory, settings } = useMenu()
+  const { categories, items, loading, categoriesLoading, itemsByCategory, settings } = useMenu()
   const { lang, isRTL } = useLanguage()
   const [selectedCategoryId, setSelectedCategoryId] = useState(null)
 
@@ -189,7 +190,7 @@ export default function Menu() {
       <MenuHeader />
       <HeroSection lang={lang} settings={settings} />
 
-      <div className="menu-content">
+      <div id="menu-section" className="menu-content">
         <AnimatePresence mode="wait">
           {selectedCategoryId && selectedCategory ? (
             <CategoryPage
@@ -219,6 +220,7 @@ export default function Menu() {
         </AnimatePresence>
       </div>
 
+      <BestSellers items={items} />
       <AboutSection lang={lang} />
       <FloatingCurrencyToggle />
     </div>
