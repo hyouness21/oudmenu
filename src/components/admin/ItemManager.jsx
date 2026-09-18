@@ -35,6 +35,7 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
     status: initial?.status ?? 'available',
     categoryId: initial?.categoryId ?? (categories[0]?.id ?? ''),
     imageUrl: initial?.imageUrl ?? '',
+    imagePosition: initial?.imagePosition ?? { x: 50, y: 50 },
   })
   const [saving, setSaving] = useState(false)
   const [imageFile, setImageFile] = useState(null)
@@ -102,6 +103,8 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
         preview={imagePreview}
         onChange={handleImage}
         onRemove={removeImage}
+        position={form.imagePosition}
+        onPositionChange={(pos) => setForm((f) => ({ ...f, imagePosition: pos }))}
       />
 
       {error && <p className="text-red-500 text-xs px-1">{error}</p>}

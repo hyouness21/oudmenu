@@ -82,7 +82,7 @@ export default function CategoryCarousel({ categories, onSelect }) {
               style={{ WebkitTapHighlightColor: 'transparent' }}
             >
               {cat.imageUrl ? (
-                <img src={cat.imageUrl} alt={name} className="w-full h-full object-cover" />
+                <img src={cat.imageUrl} alt={name} className="w-full h-full object-cover" style={{ objectPosition: `${cat.imagePosition?.x ?? 50}% ${cat.imagePosition?.y ?? 50}%` }} />
               ) : (
                 <div className="w-full h-full bg-gradient-to-br from-[#2D1E14] to-[#120C05]" />
               )}

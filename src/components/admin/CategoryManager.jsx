@@ -12,6 +12,7 @@ function CategoryForm({ initial, onSave, onCancel }) {
   const [nameAr, setNameAr] = useState(initial?.name_ar ?? '')
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(initial?.imageUrl ?? '')
+  const [imagePosition, setImagePosition] = useState(initial?.imagePosition ?? { x: 50, y: 50 })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const fileRef = useRef()
@@ -40,7 +41,7 @@ function CategoryForm({ initial, onSave, onCancel }) {
       } else if (!imagePreview) {
         imageUrl = ''
       }
-      await onSave({ name_en: nameEn, name_ar: nameAr, imageUrl })
+      await onSave({ name_en: nameEn, name_ar: nameAr, imageUrl, imagePosition })
     } catch (err) {
       setError(err.message || 'Failed to save. Try a smaller image.')
       setSaving(false)
@@ -57,6 +58,8 @@ function CategoryForm({ initial, onSave, onCancel }) {
         preview={imagePreview}
         onChange={handleImage}
         onRemove={removeImage}
+        position={imagePosition}
+        onPositionChange={setImagePosition}
       />
 
       {error && <p className="text-red-500 text-xs px-1">{error}</p>}

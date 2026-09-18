@@ -30,7 +30,7 @@ export default function ItemCard({ item, index }) {
       {/* Image */}
       <div className="relative h-36 overflow-hidden bg-surface">
         {hasImage ? (
-          <img src={item.imageUrl} alt={name} className="w-full h-full object-cover" />
+          <img src={item.imageUrl} alt={name} className="w-full h-full object-cover" style={{ objectPosition: `${item.imagePosition?.x ?? 50}% ${item.imagePosition?.y ?? 50}%` }} />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-gradient-to-br from-surface to-surface-2">
             <span className="text-4xl opacity-10">☕</span>

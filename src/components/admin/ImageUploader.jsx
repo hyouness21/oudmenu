@@ -1,7 +1,49 @@
-import { useRef } from 'react'
+import { useRef, useState } from 'react'
 
-export default function ImageUploader({ preview, onChange, onRemove, label = 'Photo (optional)' }) {
+export default function ImageUploader({
+  preview,
+  onChange,
+  onRemove,
+  position = { x: 50, y: 50 },
+  onPositionChange,
+  label = 'Photo (optional)',
+}) {
   const fileRef = useRef()
+  const dragRef = useRef(null)
+  const positionRef = useRef(position)
+  positionRef.current = position
+  const [isDragging, setIsDragging] = useState(false)
+
+  const handlePointerDown = (e) => {
+    if (!onPositionChange) return
+    e.preventDefault()
+    setIsDragging(true)
+    dragRef.current = {
+      startX: e.clientX,
+      startY: e.clientY,
+      startPosX: positionRef.current.x,
+      startPosY: positionRef.current.y,
+    }
+
+    const onMove = (ev) => {
+      if (!dragRef.current) return
+      const dx = ev.clientX - dragRef.current.startX
+      const dy = ev.clientY - dragRef.current.startY
+      const newX = Math.min(100, Math.max(0, dragRef.current.startPosX - dx * 0.3))
+      const newY = Math.min(100, Math.max(0, dragRef.current.startPosY - dy * 0.3))
+      onPositionChange({ x: newX, y: newY })
+    }
+
+    const onUp = () => {
+      dragRef.current = null
+      setIsDragging(false)
+      window.removeEventListener('pointermove', onMove)
+      window.removeEventListener('pointerup', onUp)
+    }
+
+    window.addEventListener('pointermove', onMove)
+    window.addEventListener('pointerup', onUp)
+  }
 
   return (
     <div>
@@ -9,9 +51,26 @@ export default function ImageUploader({ preview, onChange, onRemove, label = 'Ph
 
       {preview ? (
         <div>
-          {/* Preview */}
-          <div className="w-full h-40 rounded-xl overflow-hidden border border-surface-2 mb-2">
-            <img src={preview} alt="preview" className="w-full h-full object-cover" />
+          {/* Draggable preview */}
+          <div
+            className="relative w-full h-40 rounded-xl overflow-hidden border border-surface-2 mb-2 select-none"
+            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            onPointerDown={handlePointerDown}
+          >
+            <img
+              src={preview}
+              alt="preview"
+              className="w-full h-full object-cover pointer-events-none"
+              style={{ objectPosition: `${position.x}% ${position.y}%` }}
+              draggable={false}
+            />
+            {/* Drag hint overlay */}
+            <div className={`absolute inset-0 flex items-center justify-center transition-opacity duration-200 ${isDragging ? 'opacity-0' : 'opacity-0 hover:opacity-100'}`}>
+              <div className="bg-black/50 text-white text-xs px-3 py-1.5 rounded-full flex items-center gap-1.5 pointer-events-none">
+                <span className="text-base leading-none">⠿</span>
+                Drag to reposition
+              </div>
+            </div>
           </div>
 
           {/* Actions */}
