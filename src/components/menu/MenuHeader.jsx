@@ -9,7 +9,7 @@ export default function MenuHeader() {
   const { currency, toggleCurrency } = useCurrency()
 
   return (
-    <header className="sticky top-0 z-30 bg-[#1A0D06] border-b border-white/5">
+    <header className="sticky top-0 z-30 bg-[#120C05]/55 backdrop-blur-md border-b border-white/10">
       <div className="relative flex items-center justify-between px-5 h-14">
 
         <button onClick={toggleLanguage} className="text-sm z-10">
