@@ -13,9 +13,9 @@ function BestSellerCard({ item, index }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.07 }}
-      className="bg-white rounded-2xl p-4 flex flex-col items-center text-center shadow-sm border border-surface-2"
+      className="bg-white rounded-2xl p-4 flex flex-col items-center text-center shadow-sm border border-surface-2 flex-shrink-0 w-40"
     >
-      <div className="w-full aspect-square rounded-full overflow-hidden bg-surface mb-3 flex-shrink-0">
+      <div className="w-28 h-28 rounded-full overflow-hidden bg-surface mb-3 flex-shrink-0">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
@@ -73,7 +73,7 @@ export default function BestSellers({ items }) {
         </p>
       </div>
 
-      <div className="grid grid-cols-3 gap-3 max-w-lg mx-auto">
+      <div className="flex gap-4 overflow-x-auto no-scrollbar px-2 pb-2 justify-start">
         {bestSellers.map((item, i) => (
           <BestSellerCard key={item.id} item={item} index={i} />
         ))}
