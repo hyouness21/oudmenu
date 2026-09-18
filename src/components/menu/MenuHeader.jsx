@@ -9,7 +9,7 @@ export default function MenuHeader() {
   const { currency, toggleCurrency } = useCurrency()
 
   return (
-    <header className="sticky top-0 z-30 bg-[#120C05]/60 backdrop-blur-md border-b border-white/10">
+    <header className="sticky top-0 z-30 bg-[#120C05]/25 backdrop-blur-md border-b border-white/10">
       <div className="flex items-center justify-between px-5 h-14">
 
         {/* Logo — left */}
