@@ -15,7 +15,7 @@ function BestSellerCard({ item, index }) {
       transition={{ duration: 0.25, delay: index * 0.07 }}
       className="bg-white rounded-2xl p-4 flex flex-col items-center text-center shadow-sm border border-surface-2"
     >
-      <div className="w-28 h-28 rounded-full overflow-hidden bg-surface mb-3 flex-shrink-0">
+      <div className="w-full aspect-square rounded-full overflow-hidden bg-surface mb-3 flex-shrink-0">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
