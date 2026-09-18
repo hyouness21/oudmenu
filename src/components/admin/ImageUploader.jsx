@@ -54,7 +54,7 @@ export default function ImageUploader({
           {/* Draggable preview */}
           <div
             className="relative w-full h-40 rounded-xl overflow-hidden border border-surface-2 mb-2 select-none"
-            style={{ cursor: isDragging ? 'grabbing' : 'grab' }}
+            style={{ cursor: isDragging ? 'grabbing' : 'grab', touchAction: 'none' }}
             onPointerDown={handlePointerDown}
           >
             <img
