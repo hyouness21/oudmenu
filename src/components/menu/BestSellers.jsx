@@ -1,3 +1,4 @@
+import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { useCurrency } from '../../contexts/CurrencyContext'
@@ -58,7 +59,10 @@ function BestSellerCard({ item, index }) {
 
 export default function BestSellers({ items }) {
   const { lang } = useLanguage()
-  const bestSellers = items.filter((i) => i.isBestSeller).slice(0, 3)
+  const [showAll, setShowAll] = useState(false)
+  const bestSellers = items.filter((i) => i.isBestSeller).slice(0, 6)
+  const visible = showAll ? bestSellers : bestSellers.slice(0, 2)
+  const hasMore = bestSellers.length > 2
 
   if (!bestSellers.length) return null
 
@@ -73,11 +77,24 @@ export default function BestSellers({ items }) {
         </p>
       </div>
 
-      <div className="flex gap-4 overflow-x-auto no-scrollbar px-2 pb-2 justify-start">
-        {bestSellers.map((item, i) => (
+      <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto">
+        {visible.map((item, i) => (
           <BestSellerCard key={item.id} item={item} index={i} />
         ))}
       </div>
+
+      {hasMore && (
+        <div className="flex justify-center mt-5">
+          <button
+            onClick={() => setShowAll((v) => !v)}
+            className="text-brown text-xs font-semibold border border-brown/30 rounded-full px-5 py-2 hover:bg-brown hover:text-white transition-all font-lato tracking-wide"
+          >
+            {showAll
+              ? (lang === 'ar' ? 'عرض أقل' : 'Show Less')
+              : (lang === 'ar' ? 'عرض المزيد' : 'View More')}
+          </button>
+        </div>
+      )}
     </section>
   )
 }
