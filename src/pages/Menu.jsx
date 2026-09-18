@@ -34,12 +34,16 @@ function HeroSection({ lang, settings }) {
       )}
 
 
-      <div className="absolute left-0 bottom-8 opacity-15 pointer-events-none">
-        <DallahDecoration className="w-24 -scale-x-100" />
-      </div>
-      <div className="absolute right-0 bottom-8 opacity-15 pointer-events-none">
-        <DallahDecoration className="w-24" />
-      </div>
+      {!hasPhoto && (
+        <>
+          <div className="absolute left-0 bottom-8 opacity-15 pointer-events-none">
+            <DallahDecoration className="w-24 -scale-x-100" />
+          </div>
+          <div className="absolute right-0 bottom-8 opacity-15 pointer-events-none">
+            <DallahDecoration className="w-24" />
+          </div>
+        </>
+      )}
 
       <div className="relative z-10 flex flex-col items-center justify-center py-10 px-6 text-center">
         <Link to="/admin">
