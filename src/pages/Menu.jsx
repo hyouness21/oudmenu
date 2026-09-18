@@ -10,6 +10,7 @@ import FloatingCurrencyToggle from '../components/menu/FloatingCurrencyToggle'
 import DallahDecoration from '../components/menu/DallahDecoration'
 import IslamicPattern from '../components/shared/IslamicPattern'
 import Logo from '../components/shared/Logo'
+import AboutSection from '../components/menu/AboutSection'
 import './menu.css'
 
 /* ── Hero ──────────────────────────────────────────────── */
@@ -65,7 +66,7 @@ function HeroSection({ lang, settings }) {
 /* ── Category home (carousel) ──────────────────────────── */
 function CategoryHome({ categories, loading, onSelect, lang }) {
   return (
-    <div className="pb-24">
+    <div className="pb-8">
       <p className={`text-center text-text-muted text-xs tracking-widest uppercase mb-5 mt-6 ${lang === 'ar' ? 'font-cairo' : 'font-lato'}`}>
         {lang === 'ar' ? 'اختر فئة' : 'Choose a category'}
       </p>
@@ -144,7 +145,7 @@ function CategoryPage({ category, items, lang, isRTL, onBack }) {
       animate={{ opacity: 1, x: 0 }}
       exit={{ opacity: 0, x: -20 }}
       transition={{ duration: 0.25 }}
-      className="pb-24"
+      className="pb-8"
     >
       {/* Top bar */}
       <div className={`flex items-center gap-3 px-4 py-4 sticky top-14 z-10 bg-[#FBF5EB] border-b border-surface-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
@@ -218,11 +219,8 @@ export default function Menu() {
         </AnimatePresence>
       </div>
 
+      <AboutSection lang={lang} />
       <FloatingCurrencyToggle />
-
-      <footer className="fixed bottom-0 left-0 right-0 bg-[#1A0D06] py-2 text-center z-20">
-        <p className="text-white/30 text-xs font-lato tracking-widest uppercase">Oud · عود</p>
-      </footer>
     </div>
   )
 }
