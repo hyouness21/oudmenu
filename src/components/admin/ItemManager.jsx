@@ -1,10 +1,11 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useMenu } from '../../contexts/MenuContext'
 import { compressImage } from '../../utils/compressImage'
+import ImageUploader from './ImageUploader'
 
 const STATUS_OPTIONS = [
   { value: 'available', label: 'Available' },
@@ -38,7 +39,6 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
   const [saving, setSaving] = useState(false)
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(initial?.imageUrl ?? '')
-  const fileRef = useRef()
 
   const set = (key) => (e) => setForm((f) => ({ ...f, [key]: e.target.value }))
 
@@ -53,7 +53,6 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
     setImageFile(null)
     setImagePreview('')
     setForm((f) => ({ ...f, imageUrl: '' }))
-    if (fileRef.current) fileRef.current.value = ''
   }
 
   const [error, setError] = useState('')
@@ -98,26 +97,12 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
         {categories.map((c) => <option key={c.id} value={c.id}>{c.name_en}</option>)}
       </select>
 
-      {/* Image upload */}
-      <div>
-        <p className="admin-label">Item Photo (optional)</p>
-        {imagePreview ? (
-          <div className="relative w-full h-36 rounded-xl overflow-hidden border border-surface-2">
-            <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
-            <button
-              type="button"
-              onClick={removeImage}
-              className="absolute top-2 right-2 bg-black/50 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm hover:bg-black/70"
-            >✕</button>
-          </div>
-        ) : (
-          <label className="flex flex-col items-center justify-center w-full h-24 rounded-xl border-2 border-dashed border-surface-2 cursor-pointer hover:border-gold/40 transition-colors">
-            <span className="text-text-muted text-sm">Click to upload image</span>
-            <span className="text-text-light text-xs mt-1">JPG, PNG, WEBP</span>
-            <input ref={fileRef} type="file" accept="image/*" onChange={handleImage} className="hidden" />
-          </label>
-        )}
-      </div>
+      <ImageUploader
+        label="Item Photo (optional)"
+        preview={imagePreview}
+        onChange={handleImage}
+        onRemove={removeImage}
+      />
 
       {error && <p className="text-red-500 text-xs px-1">{error}</p>}
       <div className="flex gap-2">

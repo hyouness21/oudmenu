@@ -5,6 +5,7 @@ import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } 
 import { CSS } from '@dnd-kit/utilities'
 import { useMenu } from '../../contexts/MenuContext'
 import { compressImage } from '../../utils/compressImage'
+import ImageUploader from './ImageUploader'
 
 function CategoryForm({ initial, onSave, onCancel }) {
   const [nameEn, setNameEn] = useState(initial?.name_en ?? '')
@@ -51,25 +52,12 @@ function CategoryForm({ initial, onSave, onCancel }) {
       <input value={nameEn} onChange={(e) => setNameEn(e.target.value)} placeholder="Name (English)" required className="input-field" />
       <input value={nameAr} onChange={(e) => setNameAr(e.target.value)} placeholder="الاسم (عربي)" required dir="rtl" className="input-field font-cairo" />
 
-      {/* Category image */}
-      <div>
-        <p className="admin-label">Category Photo (shown in carousel)</p>
-        {imagePreview ? (
-          <div className="relative w-full h-32 rounded-xl overflow-hidden border border-surface-2">
-            <img src={imagePreview} alt="preview" className="w-full h-full object-cover" />
-            <button type="button" onClick={removeImage}
-              className="absolute top-2 right-2 bg-black/50 text-white rounded-full w-7 h-7 flex items-center justify-center text-sm hover:bg-black/70">
-              ✕
-            </button>
-          </div>
-        ) : (
-          <label className="flex flex-col items-center justify-center w-full h-24 rounded-xl border-2 border-dashed border-surface-2 cursor-pointer hover:border-gold/40 transition-colors">
-            <span className="text-text-muted text-sm">Click to upload image</span>
-            <span className="text-text-light text-xs mt-1">JPG, PNG, WEBP</span>
-            <input ref={fileRef} type="file" accept="image/*" onChange={handleImage} className="hidden" />
-          </label>
-        )}
-      </div>
+      <ImageUploader
+        label="Category Photo (shown in carousel)"
+        preview={imagePreview}
+        onChange={handleImage}
+        onRemove={removeImage}
+      />
 
       {error && <p className="text-red-500 text-xs px-1">{error}</p>}
       <div className="flex gap-2">
