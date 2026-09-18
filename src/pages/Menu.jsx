@@ -15,41 +15,44 @@ import BestSellers from '../components/menu/BestSellers'
 import './menu.css'
 
 /* ── Hero ──────────────────────────────────────────────── */
-function HeroSection({ lang, settings }) {
+function HeroSection({ lang, settings, settingsLoading }) {
   const heroBg = settings?.heroBg ?? {}
   const hasPhoto = !!heroBg.imageUrl
 
   return (
     <section className="relative bg-[#120C05] overflow-hidden -mt-14">
-      {hasPhoto ? (
-        <>
-          <img
-            src={heroBg.imageUrl}
-            alt=""
-            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
-            style={{ objectPosition: `${heroBg.imagePosition?.x ?? 50}% ${heroBg.imagePosition?.y ?? 50}%` }}
-          />
-          <div className="absolute inset-0 bg-black/60 pointer-events-none" />
-        </>
-      ) : (
-        <IslamicPattern opacity={0.04} color="#C9A84C" />
-      )}
-
-
-      {!hasPhoto && (
-        <>
-          <div className="absolute left-0 bottom-8 opacity-15 pointer-events-none">
-            <DallahDecoration className="w-24 -scale-x-100" />
-          </div>
-          <div className="absolute right-0 bottom-8 opacity-15 pointer-events-none">
-            <DallahDecoration className="w-24" />
-          </div>
-        </>
+      {!settingsLoading && (
+        hasPhoto ? (
+          <>
+            <img
+              src={heroBg.imageUrl}
+              alt=""
+              className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+              style={{ objectPosition: `${heroBg.imagePosition?.x ?? 50}% ${heroBg.imagePosition?.y ?? 50}%` }}
+            />
+            <div className="absolute inset-0 bg-black/60 pointer-events-none" />
+          </>
+        ) : (
+          <>
+            <IslamicPattern opacity={0.04} color="#C9A84C" />
+            <div className="absolute left-0 bottom-8 opacity-15 pointer-events-none">
+              <DallahDecoration className="w-24 -scale-x-100" />
+            </div>
+            <div className="absolute right-0 bottom-8 opacity-15 pointer-events-none">
+              <DallahDecoration className="w-24" />
+            </div>
+          </>
+        )
       )}
 
       <div className="relative z-10 flex flex-col items-center justify-center pt-24 pb-10 px-6 text-center">
         <Link to="/admin">
-          <Logo variant="white" className="w-48 max-w-xs mb-3" />
+          <motion.div
+            animate={{ filter: ['drop-shadow(0 0 6px rgba(201,168,76,0.2))', 'drop-shadow(0 0 18px rgba(201,168,76,0.7))', 'drop-shadow(0 0 6px rgba(201,168,76,0.2))'] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
+          >
+            <Logo variant="white" className="w-48 max-w-xs mb-3" />
+          </motion.div>
         </Link>
         <p className={`text-white/40 text-xs tracking-[0.25em] uppercase ${lang === 'ar' ? 'font-cairo tracking-normal' : 'font-lato'}`}>
           {lang === 'ar' ? 'قائمة الطعام والمشروبات' : 'Coffee & More'}
@@ -177,7 +180,7 @@ function CategoryPage({ category, items, lang, isRTL, onBack }) {
 
 /* ── Main ──────────────────────────────────────────────── */
 export default function Menu() {
-  const { categories, items, loading, categoriesLoading, itemsByCategory, settings } = useMenu()
+  const { categories, items, loading, categoriesLoading, settingsLoading, itemsByCategory, settings } = useMenu()
   const { lang, isRTL } = useLanguage()
   const [selectedCategoryId, setSelectedCategoryId] = useState(null)
 
@@ -186,7 +189,7 @@ export default function Menu() {
   return (
     <div className="min-h-screen" style={{ background: '#FBF5EB' }}>
       <MenuHeader />
-      <HeroSection lang={lang} settings={settings} />
+      <HeroSection lang={lang} settings={settings} settingsLoading={settingsLoading} />
 
       <div id="menu-section" className="menu-content">
         <AnimatePresence mode="wait">

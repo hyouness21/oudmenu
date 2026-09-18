@@ -13,6 +13,7 @@ export function MenuProvider({ children }) {
   const [settings, setSettings] = useState({})
   const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [loading, setLoading] = useState(true)
+  const [settingsLoading, setSettingsLoading] = useState(true)
 
   useEffect(() => {
     const unsub1 = onSnapshot(
@@ -31,6 +32,7 @@ export function MenuProvider({ children }) {
     )
     const unsub3 = onSnapshot(doc(db, 'settings', 'appearance'), (snap) => {
       if (snap.exists()) setSettings(snap.data())
+      setSettingsLoading(false)
     })
     return () => { unsub1(); unsub2(); unsub3() }
   }, [])
@@ -74,7 +76,7 @@ export function MenuProvider({ children }) {
 
   return (
     <MenuContext.Provider value={{
-      categories, items, settings, loading, categoriesLoading,
+      categories, items, settings, loading, categoriesLoading, settingsLoading,
       addCategory, updateCategory, deleteCategory, reorderCategories,
       addItem, updateItem, deleteItem, reorderItems, itemsByCategory,
       updateSettings,
