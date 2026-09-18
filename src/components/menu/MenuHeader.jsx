@@ -9,27 +9,27 @@ export default function MenuHeader() {
   const { currency, toggleCurrency } = useCurrency()
 
   return (
-    <header className="sticky top-0 z-30 bg-[#FBF5EB] border-b border-surface-2 shadow-sm">
+    <header className="sticky top-0 z-30 bg-[#120C05]/85 backdrop-blur-md border-b border-white/10">
       <div className="flex items-center justify-between px-5 h-14">
 
         {/* Logo — left */}
         <Link to="/admin">
-          <Logo variant="dark" className="h-8 w-auto" />
+          <Logo variant="white" className="h-8 w-auto" />
         </Link>
 
         {/* Actions — right */}
         <div className="flex items-center gap-3">
           <button onClick={toggleLanguage} className="text-sm">
-            <span className={`transition-all ${lang === 'en' ? 'font-bold text-brown' : 'text-text-muted'}`}>EN</span>
-            <span className="text-text-light mx-1.5">|</span>
-            <span className={`font-cairo transition-all ${lang === 'ar' ? 'font-bold text-brown' : 'text-text-muted'}`}>ع</span>
+            <span className={`transition-all ${lang === 'en' ? 'font-bold text-gold' : 'text-white/40'}`}>EN</span>
+            <span className="text-white/20 mx-1.5">|</span>
+            <span className={`font-cairo transition-all ${lang === 'ar' ? 'font-bold text-gold' : 'text-white/40'}`}>ع</span>
           </button>
 
-          <div className="w-px h-4 bg-surface-2" />
+          <div className="w-px h-4 bg-white/15" />
 
           <button
             onClick={toggleCurrency}
-            className="text-sm font-semibold border border-brown/30 text-brown rounded-full px-3 py-1 hover:bg-brown hover:text-white transition-all"
+            className="text-sm font-semibold border border-gold/40 text-gold rounded-full px-3 py-1 hover:bg-gold hover:text-brown transition-all"
           >
             <AnimatePresence mode="wait">
               <motion.span
