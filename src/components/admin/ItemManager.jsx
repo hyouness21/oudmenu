@@ -67,7 +67,10 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
       let imageUrl = form.imageUrl
       if (imageFile) {
         const storageRef = ref(storage, `items/${Date.now()}_${imageFile.name}`)
-        await uploadBytes(storageRef, imageFile)
+        const timeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Upload timed out — make sure Firebase Storage is enabled and rules are published.')), 15000)
+        )
+        await Promise.race([uploadBytes(storageRef, imageFile), timeout])
         imageUrl = await getDownloadURL(storageRef)
       }
       await onSave({ ...form, price: parseFloat(form.price), imageUrl })

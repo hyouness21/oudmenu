@@ -37,7 +37,10 @@ function CategoryForm({ initial, onSave, onCancel }) {
       let imageUrl = initial?.imageUrl ?? ''
       if (imageFile) {
         const storageRef = ref(storage, `categories/${Date.now()}_${imageFile.name}`)
-        await uploadBytes(storageRef, imageFile)
+        const timeout = new Promise((_, reject) =>
+          setTimeout(() => reject(new Error('Upload timed out — make sure Firebase Storage is enabled and rules are published.')), 15000)
+        )
+        await Promise.race([uploadBytes(storageRef, imageFile), timeout])
         imageUrl = await getDownloadURL(storageRef)
       } else if (!imagePreview) {
         imageUrl = ''
