@@ -24,29 +24,29 @@ export default function AboutSection({ lang }) {
   return (
     <>
       {/* ── About ── */}
-      <section className="bg-[#1A0D06] pt-16 pb-12 px-6">
+      <section className="bg-[#E1CFB9] pt-16 pb-12 px-6">
         {/* Gold top rule */}
         <div className="flex items-center gap-3 max-w-xl mx-auto mb-10">
-          <div className="flex-1 h-px bg-gold/20" />
-          <Logo variant="white" className="w-24" />
-          <div className="flex-1 h-px bg-gold/20" />
+          <div className="flex-1 h-px bg-brown/20" />
+          <Logo variant="dark" className="w-24" />
+          <div className="flex-1 h-px bg-brown/20" />
         </div>
 
         {/* Heading */}
-        <h2 className={`text-center text-gold tracking-[0.2em] uppercase text-xs mb-6 font-lato ${lang === 'ar' ? 'font-cairo tracking-normal' : ''}`}>
+        <h2 className={`text-center text-brown/50 tracking-[0.2em] uppercase text-xs mb-6 font-lato ${lang === 'ar' ? 'font-cairo tracking-normal' : ''}`}>
           {lang === 'ar' ? 'من نحن' : 'About Us'}
         </h2>
 
         {/* Description */}
         <div className="max-w-lg mx-auto text-center mb-10">
           {lang === 'ar' ? (
-            <p className="text-white/60 text-sm leading-7 font-cairo" dir="rtl">
+            <p className="text-brown/70 text-sm leading-7 font-cairo" dir="rtl">
               عود أكثر من مجرد مقهى — إنه مكانٌ تُحكى فيه القصص على أنغام رائحة القهوة.
               مستوحى من دفء الضيافة العربية الأصيلة، نقدم لكم تجربة مشروبات استثنائية
               في أجواء صُممت خصيصاً للراحة واللقاء.
             </p>
           ) : (
-            <p className="text-white/60 text-sm leading-7 font-lato">
+            <p className="text-brown/70 text-sm leading-7 font-lato">
               Oud is more than a coffee shop — it's a place where every cup tells a story.
               Inspired by the warmth of authentic Arabic hospitality, we craft exceptional
               beverages in a space designed for comfort and genuine connection.
@@ -58,10 +58,10 @@ export default function AboutSection({ lang }) {
         <div className="max-w-xl mx-auto grid grid-cols-3 gap-4 text-center">
           {/* Hours */}
           <div>
-            <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">
+            <p className="text-brown text-xs tracking-widest uppercase font-lato mb-3">
               {lang === 'ar' ? 'أوقات العمل' : 'Hours'}
             </p>
-            <p className="text-white/50 text-xs leading-5 font-lato">
+            <p className="text-brown/60 text-xs leading-5 font-lato">
               {lang === 'ar' ? (
                 <>الاثنين – الجمعة<br />٨ص – ١١م<br />السبت – الأحد<br />٩ص – ١٢م</>
               ) : (
@@ -72,10 +72,10 @@ export default function AboutSection({ lang }) {
 
           {/* Location */}
           <div>
-            <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">
+            <p className="text-brown text-xs tracking-widest uppercase font-lato mb-3">
               {lang === 'ar' ? 'الموقع' : 'Location'}
             </p>
-            <p className="text-white/50 text-xs leading-5 font-lato">
+            <p className="text-brown/60 text-xs leading-5 font-lato">
               {lang === 'ar' ? (
                 <>لبنان، حي معد<br />بجانب خيمة مواد</>
               ) : (
@@ -86,18 +86,18 @@ export default function AboutSection({ lang }) {
 
           {/* Contact */}
           <div>
-            <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">
+            <p className="text-brown text-xs tracking-widest uppercase font-lato mb-3">
               {lang === 'ar' ? 'تواصل معنا' : 'Contact'}
             </p>
             <a
               href="tel:+81874651"
-              className="text-white/50 text-xs leading-5 font-lato block hover:text-gold transition-colors"
+              className="text-brown/60 text-xs leading-5 font-lato block hover:text-brown transition-colors"
             >
               +81 874 651
             </a>
             <a
               href="https://wa.me/81874651"
-              className="text-gold/70 text-xs leading-5 font-lato block mt-1 hover:text-gold transition-colors"
+              className="text-brown text-xs leading-5 font-lato block mt-1 hover:text-brown/70 transition-colors"
             >
               WhatsApp ↗
             </a>
