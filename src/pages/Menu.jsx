@@ -33,20 +33,6 @@ function HeroSection({ lang, settings }) {
         <IslamicPattern opacity={0.04} color="#C9A84C" />
       )}
 
-      {!hasPhoto && (
-        <>
-          <motion.div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-gold/10 blur-3xl pointer-events-none"
-            animate={{ y: [0, -18, 0, 18, 0] }}
-            transition={{ duration: 7, repeat: Infinity, ease: 'easeInOut' }}
-          />
-          <motion.div
-            className="absolute bottom-4 right-0 w-56 h-56 rounded-full bg-green/10 blur-3xl pointer-events-none"
-            animate={{ y: [0, 14, 0, -14, 0] }}
-            transition={{ duration: 9, repeat: Infinity, ease: 'easeInOut', delay: 1.5 }}
-          />
-        </>
-      )}
 
       <div className="absolute left-0 bottom-8 opacity-15 pointer-events-none">
         <DallahDecoration className="w-24 -scale-x-100" />
