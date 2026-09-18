@@ -4,8 +4,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useMenu } from '../../contexts/MenuContext'
-import { storage } from '../../firebase/config'
-import { ref, uploadBytes, getDownloadURL, deleteObject } from 'firebase/storage'
+import { compressImage } from '../../utils/compressImage'
 
 const STATUS_OPTIONS = [
   { value: 'available', label: 'Available' },
@@ -66,12 +65,7 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
     try {
       let imageUrl = form.imageUrl
       if (imageFile) {
-        const storageRef = ref(storage, `items/${Date.now()}_${imageFile.name}`)
-        const timeout = new Promise((_, reject) =>
-          setTimeout(() => reject(new Error('Upload timed out — make sure Firebase Storage is enabled and rules are published.')), 15000)
-        )
-        await Promise.race([uploadBytes(storageRef, imageFile), timeout])
-        imageUrl = await getDownloadURL(storageRef)
+        imageUrl = await compressImage(imageFile)
       }
       await onSave({ ...form, price: parseFloat(form.price), imageUrl })
     } catch (err) {
