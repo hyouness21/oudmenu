@@ -73,10 +73,8 @@ function CategoryHome({ categories, loading, onSelect, lang }) {
       </p>
 
       {loading ? (
-        <div className="flex gap-3 px-4 overflow-hidden">
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className="flex-shrink-0 w-40 h-52 rounded-2xl bg-surface-2 animate-pulse" />
-          ))}
+        <div className="flex justify-center py-16">
+          <div className="w-8 h-8 rounded-full border-2 border-gold/20 border-t-gold animate-spin" />
         </div>
       ) : (
         <CategoryCarousel categories={categories} onSelect={onSelect} />
