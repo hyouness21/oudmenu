@@ -18,7 +18,7 @@ function HeroSection({ lang, settings }) {
   const hasPhoto = !!heroBg.imageUrl
 
   return (
-    <section className="relative bg-[#120C05] overflow-hidden">
+    <section className="relative bg-[#120C05] overflow-hidden -mt-14">
       {hasPhoto ? (
         <>
           <img
@@ -45,7 +45,7 @@ function HeroSection({ lang, settings }) {
         </>
       )}
 
-      <div className="relative z-10 flex flex-col items-center justify-center py-10 px-6 text-center">
+      <div className="relative z-10 flex flex-col items-center justify-center pt-24 pb-10 px-6 text-center">
         <Link to="/admin">
           <Logo variant="white" className="w-48 max-w-xs mb-3" />
         </Link>
