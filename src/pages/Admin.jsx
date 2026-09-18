@@ -8,6 +8,7 @@ import ItemManager from '../components/admin/ItemManager'
 import ExchangeRate from '../components/admin/ExchangeRate'
 import QRCodeSection from '../components/admin/QRCodeSection'
 import PasswordChange from '../components/admin/PasswordChange'
+import AppearanceManager from '../components/admin/AppearanceManager'
 
 export default function Admin() {
   const { user } = useAuth()
@@ -65,6 +66,7 @@ export default function Admin() {
           <Route path="items" element={<ItemManager />} />
           <Route path="rate" element={<ExchangeRate />} />
           <Route path="qr" element={<QRCodeSection />} />
+          <Route path="appearance" element={<AppearanceManager />} />
           <Route path="password" element={<PasswordChange />} />
         </Routes>
       </main>

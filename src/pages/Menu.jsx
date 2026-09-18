@@ -13,10 +13,25 @@ import Logo from '../components/shared/Logo'
 import './menu.css'
 
 /* ── Hero ──────────────────────────────────────────────── */
-function HeroSection({ lang }) {
+function HeroSection({ lang, settings }) {
+  const heroBg = settings?.heroBg ?? {}
+  const hasPhoto = !!heroBg.imageUrl
+
   return (
     <section className="relative bg-[#120C05] overflow-hidden">
-      <IslamicPattern opacity={0.04} color="#C9A84C" />
+      {hasPhoto ? (
+        <>
+          <img
+            src={heroBg.imageUrl}
+            alt=""
+            className="absolute inset-0 w-full h-full object-cover pointer-events-none"
+            style={{ objectPosition: `${heroBg.imagePosition?.x ?? 50}% ${heroBg.imagePosition?.y ?? 50}%` }}
+          />
+          <div className="absolute inset-0 bg-black/60 pointer-events-none" />
+        </>
+      ) : (
+        <IslamicPattern opacity={0.04} color="#C9A84C" />
+      )}
 
       <motion.div
         className="absolute top-0 left-1/2 -translate-x-1/2 w-80 h-80 rounded-full bg-gold/10 blur-3xl pointer-events-none"
@@ -168,7 +183,7 @@ function CategoryPage({ category, items, lang, isRTL, onBack }) {
 
 /* ── Main ──────────────────────────────────────────────── */
 export default function Menu() {
-  const { categories, loading, categoriesLoading, itemsByCategory } = useMenu()
+  const { categories, loading, categoriesLoading, itemsByCategory, settings } = useMenu()
   const { lang, isRTL } = useLanguage()
   const [selectedCategoryId, setSelectedCategoryId] = useState(null)
 
@@ -177,7 +192,7 @@ export default function Menu() {
   return (
     <div className="min-h-screen" style={{ background: '#FBF5EB' }}>
       <MenuHeader />
-      <HeroSection lang={lang} />
+      <HeroSection lang={lang} settings={settings} />
 
       <div className="menu-content">
         <AnimatePresence mode="wait">

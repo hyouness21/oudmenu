@@ -2,7 +2,7 @@ import { createContext, useContext, useState, useEffect } from 'react'
 import { db } from '../firebase/config'
 import {
   collection, onSnapshot, addDoc, updateDoc, deleteDoc,
-  doc, writeBatch, query, orderBy,
+  doc, writeBatch, query, orderBy, setDoc,
 } from 'firebase/firestore'
 
 const MenuContext = createContext()
@@ -10,6 +10,7 @@ const MenuContext = createContext()
 export function MenuProvider({ children }) {
   const [categories, setCategories] = useState([])
   const [items, setItems] = useState([])
+  const [settings, setSettings] = useState({})
   const [categoriesLoading, setCategoriesLoading] = useState(true)
   const [loading, setLoading] = useState(true)
 
@@ -28,7 +29,10 @@ export function MenuProvider({ children }) {
         setLoading(false)
       }
     )
-    return () => { unsub1(); unsub2() }
+    const unsub3 = onSnapshot(doc(db, 'settings', 'appearance'), (snap) => {
+      if (snap.exists()) setSettings(snap.data())
+    })
+    return () => { unsub1(); unsub2(); unsub3() }
   }, [])
 
   const addCategory = (data) =>
@@ -65,11 +69,15 @@ export function MenuProvider({ children }) {
   const itemsByCategory = (catId) =>
     items.filter((i) => i.categoryId === catId).sort((a, b) => a.order - b.order)
 
+  const updateSettings = (data) =>
+    setDoc(doc(db, 'settings', 'appearance'), data, { merge: true })
+
   return (
     <MenuContext.Provider value={{
-      categories, items, loading, categoriesLoading,
+      categories, items, settings, loading, categoriesLoading,
       addCategory, updateCategory, deleteCategory, reorderCategories,
       addItem, updateItem, deleteItem, reorderItems, itemsByCategory,
+      updateSettings,
     }}>
       {children}
     </MenuContext.Provider>

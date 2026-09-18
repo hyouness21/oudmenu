@@ -6,6 +6,7 @@ import Logo from '../shared/Logo'
 const navItems = [
   { label: 'Categories', icon: '◈', path: '/admin/dashboard/categories' },
   { label: 'Items', icon: '☕', path: '/admin/dashboard/items' },
+  { label: 'Appearance', icon: '🖼', path: '/admin/dashboard/appearance' },
   { label: 'Exchange Rate', icon: '↕', path: '/admin/dashboard/rate' },
   { label: 'QR Code', icon: '⊞', path: '/admin/dashboard/qr' },
   { label: 'Password', icon: '🔑', path: '/admin/dashboard/password' },
