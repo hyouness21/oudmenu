@@ -85,48 +85,67 @@ function CategoryHome({ categories, loading, onSelect }) {
   )
 }
 
-/* ── Item row (list, no image) ─────────────────────────── */
-function ItemRow({ item }) {
+/* ── Item card (2-col grid) ────────────────────────────── */
+function ItemCard({ item, index }) {
   const { format, currency } = useCurrency()
   const isUnavailable = item.status === 'unavailable'
   const isComingSoon = item.status === 'coming_soon'
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 6 }}
+      initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`flex items-start justify-between gap-4 py-4 border-b border-surface-2 last:border-0 ${isUnavailable ? 'opacity-40' : ''}`}
+      transition={{ duration: 0.22, delay: index * 0.05 }}
+      className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-surface-2 flex flex-col ${isUnavailable ? 'opacity-40' : ''}`}
     >
-      <div className="flex-1 min-w-0">
-        <p className="text-text font-semibold text-sm leading-snug font-playfair">
-          {item.name_en}
-        </p>
-        {item.description_en && (
-          <p className="text-text-muted text-xs mt-0.5 leading-relaxed">
-            {item.description_en}
-          </p>
-        )}
-        {isComingSoon && (
-          <span className="inline-block mt-1 text-xs text-gold border border-gold/30 rounded-full px-2 py-0.5">
-            Coming Soon
-          </span>
+      {/* Photo */}
+      <div className="w-full aspect-square bg-surface-2 flex-shrink-0">
+        {item.imageUrl ? (
+          <img
+            src={item.imageUrl}
+            alt={item.name_en}
+            className="w-full h-full object-cover"
+            style={{ objectPosition: `${item.imagePosition?.x ?? 50}% ${item.imagePosition?.y ?? 50}%` }}
+          />
+        ) : (
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-3xl opacity-20">☕</span>
+          </div>
         )}
       </div>
 
-      {!isComingSoon && (
-        <AnimatePresence mode="wait">
-          <motion.p
-            key={currency}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            transition={{ duration: 0.15 }}
-            className="flex-shrink-0 text-brown font-bold text-sm"
-          >
-            {format(item.price, item.priceCurrency)}
-          </motion.p>
-        </AnimatePresence>
-      )}
+      {/* Info */}
+      <div className="p-3 flex flex-col flex-1">
+        <p className="text-text font-semibold text-sm leading-snug font-playfair line-clamp-2">
+          {item.name_en}
+        </p>
+        {item.description_en && (
+          <p className="text-text-muted text-xs mt-1 leading-relaxed line-clamp-2">
+            {item.description_en}
+          </p>
+        )}
+
+        <div className="mt-auto pt-2">
+          {isComingSoon ? (
+            <span className="text-xs text-gold border border-gold/30 rounded-full px-2 py-0.5">
+              Coming Soon
+            </span>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={currency}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="text-brown font-bold text-sm"
+              >
+                {format(item.price, item.priceCurrency)}
+              </motion.p>
+            </AnimatePresence>
+          )}
+        </div>
+      </div>
     </motion.div>
   )
 }
@@ -154,14 +173,16 @@ function CategoryPage({ category, items, onBack }) {
         </h2>
       </div>
 
-      {/* Items list */}
-      <div className="px-5 mt-2">
+      {/* Items grid */}
+      <div className="px-4 mt-4">
         {items.length === 0 ? (
           <p className="text-text-muted text-sm py-12 text-center">No items yet.</p>
         ) : (
-          items.map((item) => (
-            <ItemRow key={item.id} item={item} />
-          ))
+          <div className="grid grid-cols-2 gap-3">
+            {items.map((item, i) => (
+              <ItemCard key={item.id} item={item} index={i} />
+            ))}
+          </div>
         )}
       </div>
     </motion.div>
