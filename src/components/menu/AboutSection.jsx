@@ -20,38 +20,22 @@ const TikTokIcon = () => (
   </svg>
 )
 
-export default function AboutSection({ lang }) {
+export default function AboutSection() {
   return (
     <>
       {/* ── About Us ── */}
       <section id="about-section" className="bg-[#E1CFB9] py-14 px-6">
         <div className="max-w-lg mx-auto text-center">
-          <p className="text-brown/40 text-xs tracking-widest uppercase font-lato mb-1">
-            {lang === 'ar' ? 'تعرف علينا' : 'Our Story'}
-          </p>
-          <h2 className={`text-brown text-2xl font-bold mb-4 ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
-            {lang === 'ar' ? 'من نحن' : 'About Us'}
-          </h2>
+          <p className="text-brown/40 text-xs tracking-widest uppercase font-lato mb-1">Our Story</p>
+          <h2 className="text-brown text-2xl font-bold mb-4 font-playfair">About Us</h2>
           <div className="h-px bg-brown/20 max-w-[80px] mx-auto mb-6" />
-
-          {lang === 'ar' ? (
-            <p className="text-brown/70 text-sm leading-8 font-cairo" dir="rtl">
-              في عود، نؤمن أن كل فنجان قهوة يحكي قصة. من أجواء الضيافة العربية الأصيلة
-              إلى كل تفصيل في مكاننا، نسعى دائماً لنقدم لكم لحظات لا تُنسى.
-              مشروباتنا مُعدّة بعناية، وفضاؤنا صُمّم ليكون ملجأكم اليومي للراحة والتواصل.
-            </p>
-          ) : (
-            <p className="text-brown/70 text-sm leading-8 font-lato">
-              At Oud, we believe every cup of coffee tells a story. From the warmth of authentic
-              Arabic hospitality to every detail of our space, we strive to offer you moments
-              that truly matter. Our drinks are crafted with care, and our space is designed
-              to be your daily refuge for comfort and connection.
-            </p>
-          )}
-
-          <p className={`text-brown/40 text-sm mt-8 italic ${lang === 'ar' ? 'font-cairo not-italic' : 'font-playfair'}`}>
-            {lang === 'ar' ? '— فريق عود' : '— The Oud Team'}
+          <p className="text-brown/70 text-sm leading-8 font-lato">
+            At Oud, we believe every cup of coffee tells a story. From the warmth of authentic
+            Arabic hospitality to every detail of our space, we strive to offer you moments
+            that truly matter. Our drinks are crafted with care, and our space is designed
+            to be your daily refuge for comfort and connection.
           </p>
+          <p className="text-brown/40 text-sm mt-8 italic font-playfair">— The Oud Team</p>
         </div>
       </section>
 
@@ -67,35 +51,19 @@ export default function AboutSection({ lang }) {
           {/* Info grid */}
           <div className="grid grid-cols-3 gap-4 text-center mb-8">
             <div>
-              <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">
-                {lang === 'ar' ? 'أوقات العمل' : 'Hours'}
-              </p>
+              <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">Hours</p>
               <p className="text-white/50 text-xs leading-5 font-lato">
-                {lang === 'ar' ? (
-                  <>الاثنين – الجمعة<br />٨ص – ١١م<br />السبت – الأحد<br />٩ص – ١٢م</>
-                ) : (
-                  <>Mon – Fri<br />8am – 11pm<br />Sat – Sun<br />9am – 12am</>
-                )}
+                Mon – Fri<br />8am – 11pm<br />Sat – Sun<br />9am – 12am
               </p>
             </div>
-
             <div>
-              <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">
-                {lang === 'ar' ? 'الموقع' : 'Location'}
-              </p>
+              <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">Location</p>
               <p className="text-white/50 text-xs leading-5 font-lato">
-                {lang === 'ar' ? (
-                  <>لبنان، حي معد<br />بجانب خيمة مواد</>
-                ) : (
-                  <>Lebanon, Hay Made<br />Beside Khaymat Mouwad</>
-                )}
+                Lebanon, Hay Made<br />Beside Khaymat Mouwad
               </p>
             </div>
-
             <div>
-              <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">
-                {lang === 'ar' ? 'تواصل' : 'Contact'}
-              </p>
+              <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">Contact</p>
               <a href="tel:+81874651" className="text-white/50 text-xs leading-5 font-lato block hover:text-gold transition-colors">
                 +81 874 651
               </a>
@@ -109,18 +77,12 @@ export default function AboutSection({ lang }) {
 
           {/* Nav links */}
           <div className="flex justify-center gap-6 mb-6">
-            <a
-              href="#about-section"
-              className="text-white/40 text-xs font-lato tracking-widest uppercase hover:text-white transition-colors"
-            >
-              {lang === 'ar' ? 'من نحن' : 'About Us'}
+            <a href="#about-section" className="text-white/40 text-xs font-lato tracking-widest uppercase hover:text-white transition-colors">
+              About Us
             </a>
             <span className="text-white/20">·</span>
-            <a
-              href="#menu-section"
-              className="text-white/40 text-xs font-lato tracking-widest uppercase hover:text-white transition-colors"
-            >
-              {lang === 'ar' ? 'القائمة' : 'Menu'}
+            <a href="#menu-section" className="text-white/40 text-xs font-lato tracking-widest uppercase hover:text-white transition-colors">
+              Menu
             </a>
           </div>
 

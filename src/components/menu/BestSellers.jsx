@@ -1,13 +1,9 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { useLanguage } from '../../contexts/LanguageContext'
 import { useCurrency } from '../../contexts/CurrencyContext'
 
 function BestSellerCard({ item, index }) {
-  const { lang } = useLanguage()
   const { format, currency } = useCurrency()
-  const name = lang === 'ar' ? item.name_ar : item.name_en
-  const description = lang === 'ar' ? item.description_ar : item.description_en
 
   return (
     <motion.div
@@ -20,7 +16,7 @@ function BestSellerCard({ item, index }) {
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
-            alt={name}
+            alt={item.name_en}
             className="w-full h-full object-cover"
             style={{ objectPosition: `${item.imagePosition?.x ?? 50}% ${item.imagePosition?.y ?? 50}%` }}
           />
@@ -31,13 +27,13 @@ function BestSellerCard({ item, index }) {
         )}
       </div>
 
-      <h3 className={`font-semibold text-brown text-xs leading-snug mb-1 line-clamp-2 ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
-        {name}
+      <h3 className="font-semibold text-brown text-xs leading-snug mb-1 line-clamp-2 font-playfair">
+        {item.name_en}
       </h3>
 
-      {description && (
-        <p className={`text-text-muted text-xs leading-relaxed line-clamp-2 mb-2 ${lang === 'ar' ? 'font-cairo' : ''}`}>
-          {description}
+      {item.description_en && (
+        <p className="text-text-muted text-xs leading-relaxed line-clamp-2 mb-2">
+          {item.description_en}
         </p>
       )}
 
@@ -58,7 +54,6 @@ function BestSellerCard({ item, index }) {
 }
 
 export default function BestSellers({ items }) {
-  const { lang } = useLanguage()
   const [showAll, setShowAll] = useState(false)
   const bestSellers = items.filter((i) => i.isBestSeller).slice(0, 6)
   const visible = showAll ? bestSellers : bestSellers.slice(0, 2)
@@ -69,12 +64,8 @@ export default function BestSellers({ items }) {
   return (
     <section className="bg-[#FBF5EB] py-10 px-5">
       <div className="text-center mb-6">
-        <p className={`text-text-muted text-xs tracking-widest uppercase font-lato mb-1 ${lang === 'ar' ? 'font-cairo tracking-normal' : ''}`}>
-          {lang === 'ar' ? '— الأكثر طلباً —' : '— Best Sellers —'}
-        </p>
-        <p className={`text-text-light text-xs mt-1 ${lang === 'ar' ? 'font-cairo' : 'font-lato'}`}>
-          {lang === 'ar' ? 'الأصناف الأكثر حباً لدى زبائننا' : 'Our most popular picks loved by everyone'}
-        </p>
+        <p className="text-text-muted text-xs tracking-widest uppercase font-lato mb-1">— Best Sellers —</p>
+        <p className="text-text-light text-xs mt-1 font-lato">Our most popular picks loved by everyone</p>
       </div>
 
       <div className="grid grid-cols-2 gap-4 max-w-sm mx-auto">
@@ -89,9 +80,7 @@ export default function BestSellers({ items }) {
             onClick={() => setShowAll((v) => !v)}
             className="text-brown text-xs font-semibold border border-brown/30 rounded-full px-5 py-2 hover:bg-brown hover:text-white transition-all font-lato tracking-wide"
           >
-            {showAll
-              ? (lang === 'ar' ? 'عرض أقل' : 'Show Less')
-              : (lang === 'ar' ? 'عرض المزيد' : 'View More')}
+            {showAll ? 'Show Less' : 'View More'}
           </button>
         </div>
       )}

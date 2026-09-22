@@ -27,9 +27,7 @@ const statusColors = {
 function ItemForm({ initial, categories, onSave, onCancel }) {
   const [form, setForm] = useState({
     name_en: initial?.name_en ?? '',
-    name_ar: initial?.name_ar ?? '',
     description_en: initial?.description_en ?? '',
-    description_ar: initial?.description_ar ?? '',
     price: initial?.price ?? '',
     priceCurrency: initial?.priceCurrency ?? 'USD',
     status: initial?.status ?? 'available',
@@ -77,14 +75,8 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-bg rounded-2xl p-4 border border-surface-2 flex flex-col gap-3">
-      <div className="grid grid-cols-2 gap-3">
-        <input value={form.name_en} onChange={set('name_en')} placeholder="Name (English)" required className="input-field" />
-        <input value={form.name_ar} onChange={set('name_ar')} placeholder="الاسم (عربي)" required dir="rtl" className="input-field font-cairo" />
-      </div>
-      <div className="grid grid-cols-2 gap-3">
-        <input value={form.description_en} onChange={set('description_en')} placeholder="Description (English)" className="input-field" />
-        <input value={form.description_ar} onChange={set('description_ar')} placeholder="الوصف (عربي)" dir="rtl" className="input-field font-cairo" />
-      </div>
+      <input value={form.name_en} onChange={set('name_en')} placeholder="Item Name" required className="input-field" />
+      <input value={form.description_en} onChange={set('description_en')} placeholder="Description" className="input-field" />
       <div className="grid grid-cols-3 gap-3">
         <input value={form.price} onChange={set('price')} placeholder="Price" type="number" step="0.01" required className="input-field" />
         <select value={form.priceCurrency} onChange={set('priceCurrency')} className="input-field">
@@ -145,7 +137,7 @@ function SortableItem({ item, categories, onEdit, onDelete }) {
             {STATUS_OPTIONS.find(s => s.value === item.status)?.label}
           </span>
         </div>
-        <p className="text-text-muted text-xs mt-0.5 font-cairo" dir="rtl">{item.name_ar}</p>
+
         <p className="text-text-light text-xs mt-0.5">
           {item.priceCurrency === 'USD' ? `$${item.price}` : `${item.price.toLocaleString()} ل.ل`}
           {cat && <span className="ml-2 opacity-60">· {cat.name_en}</span>}
@@ -167,7 +159,7 @@ function SortableItem({ item, categories, onEdit, onDelete }) {
 }
 
 export default function ItemManager() {
-  const { categories, items, addItem, updateItem, deleteItem, reorderItems, itemsByCategory } = useMenu()
+  const { categories, items, addItem, updateItem, deleteItem, reorderItems } = useMenu()
   const [showAdd, setShowAdd] = useState(false)
   const [editing, setEditing] = useState(null)
   const [filterCat, setFilterCat] = useState('all')

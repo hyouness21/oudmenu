@@ -9,7 +9,6 @@ import ImageUploader from './ImageUploader'
 
 function CategoryForm({ initial, onSave, onCancel }) {
   const [nameEn, setNameEn] = useState(initial?.name_en ?? '')
-  const [nameAr, setNameAr] = useState(initial?.name_ar ?? '')
   const [imageFile, setImageFile] = useState(null)
   const [imagePreview, setImagePreview] = useState(initial?.imageUrl ?? '')
   const [imagePosition, setImagePosition] = useState(initial?.imagePosition ?? { x: 50, y: 50 })
@@ -41,7 +40,7 @@ function CategoryForm({ initial, onSave, onCancel }) {
       } else if (!imagePreview) {
         imageUrl = ''
       }
-      await onSave({ name_en: nameEn, name_ar: nameAr, imageUrl, imagePosition })
+      await onSave({ name_en: nameEn, imageUrl, imagePosition })
     } catch (err) {
       setError(err.message || 'Failed to save. Try a smaller image.')
       setSaving(false)
@@ -50,8 +49,7 @@ function CategoryForm({ initial, onSave, onCancel }) {
 
   return (
     <form onSubmit={handleSubmit} className="bg-bg rounded-2xl p-4 border border-surface-2 flex flex-col gap-3">
-      <input value={nameEn} onChange={(e) => setNameEn(e.target.value)} placeholder="Name (English)" required className="input-field" />
-      <input value={nameAr} onChange={(e) => setNameAr(e.target.value)} placeholder="الاسم (عربي)" required dir="rtl" className="input-field font-cairo" />
+      <input value={nameEn} onChange={(e) => setNameEn(e.target.value)} placeholder="Category Name" required className="input-field" />
 
       <ImageUploader
         label="Category Photo (shown in carousel)"

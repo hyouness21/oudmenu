@@ -1,11 +1,9 @@
 import { useRef, useEffect } from 'react'
-import { useLanguage } from '../../contexts/LanguageContext'
 
 const REPS = 6
 const SPEED = 0.6
 
 export default function CategoryCarousel({ categories, onSelect }) {
-  const { lang } = useLanguage()
   const trackRef = useRef(null)
   const posRef = useRef(0)
   const pausedRef = useRef(false)
@@ -116,7 +114,7 @@ export default function CategoryCarousel({ categories, onSelect }) {
     <div className="overflow-hidden w-full" style={{ cursor: 'grab' }} dir="ltr">
       <div ref={trackRef} className="flex" style={{ willChange: 'transform' }}>
         {track.map((cat, i) => {
-          const name = lang === 'ar' ? cat.name_ar : cat.name_en
+          const name = cat.name_en
           return (
             <button
               key={`${cat.id}-${i}`}
@@ -140,7 +138,7 @@ export default function CategoryCarousel({ categories, onSelect }) {
               )}
               <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent pointer-events-none" />
               <div className="absolute bottom-0 left-0 right-0 p-3 text-center pointer-events-none">
-                <p className={`text-white font-bold text-sm drop-shadow-lg ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
+                <p className="text-white font-bold text-sm drop-shadow-lg font-playfair">
                   {name}
                 </p>
               </div>

@@ -1,11 +1,9 @@
 import { AnimatePresence, motion } from 'framer-motion'
-import { useLanguage } from '../../contexts/LanguageContext'
 import { useCurrency } from '../../contexts/CurrencyContext'
 import { Link } from 'react-router-dom'
 import Logo from '../shared/Logo'
 
 export default function MenuHeader() {
-  const { lang, toggleLanguage } = useLanguage()
   const { currency, toggleCurrency } = useCurrency()
 
   return (
@@ -19,13 +17,6 @@ export default function MenuHeader() {
 
         {/* Actions — right */}
         <div className="flex items-center gap-3">
-          <button onClick={toggleLanguage} className="text-sm">
-            <span className={`transition-all ${lang === 'en' ? 'font-bold text-gold' : 'text-white/40'}`}>EN</span>
-            <span className="text-white/20 mx-1.5">|</span>
-            <span className={`font-cairo transition-all ${lang === 'ar' ? 'font-bold text-gold' : 'text-white/40'}`}>ع</span>
-          </button>
-
-          <div className="w-px h-4 bg-white/15" />
 
           <button
             onClick={toggleCurrency}

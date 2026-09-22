@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { Link } from 'react-router-dom'
 import { useMenu } from '../contexts/MenuContext'
-import { useLanguage } from '../contexts/LanguageContext'
 import { useCurrency } from '../contexts/CurrencyContext'
 import MenuHeader from '../components/menu/MenuHeader'
 import CategoryCarousel from '../components/menu/CategoryCarousel'
@@ -15,7 +14,7 @@ import BestSellers from '../components/menu/BestSellers'
 import './menu.css'
 
 /* ── Hero ──────────────────────────────────────────────── */
-function HeroSection({ lang, settings, settingsLoading }) {
+function HeroSection({ settings, settingsLoading }) {
   const heroBg = settings?.heroBg ?? {}
   const hasPhoto = !!heroBg.imageUrl
 
@@ -54,8 +53,8 @@ function HeroSection({ lang, settings, settingsLoading }) {
             <Logo variant="white" className="w-48 max-w-xs mb-3" />
           </motion.div>
         </Link>
-        <p className={`text-white/40 text-xs tracking-[0.25em] uppercase ${lang === 'ar' ? 'font-cairo tracking-normal' : 'font-lato'}`}>
-          {lang === 'ar' ? 'قائمة الطعام والمشروبات' : 'Coffee & More'}
+        <p className="text-white/40 text-xs tracking-[0.25em] uppercase font-lato">
+          Coffee & More
         </p>
       </div>
 
@@ -68,11 +67,11 @@ function HeroSection({ lang, settings, settingsLoading }) {
 }
 
 /* ── Category home (carousel) ──────────────────────────── */
-function CategoryHome({ categories, loading, onSelect, lang }) {
+function CategoryHome({ categories, loading, onSelect }) {
   return (
     <div className="pb-8">
-      <p className={`text-center text-text-muted text-xs tracking-widest uppercase mb-5 mt-6 ${lang === 'ar' ? 'font-cairo' : 'font-lato'}`}>
-        {lang === 'ar' ? 'اختر فئة' : 'Choose a category'}
+      <p className="text-center text-text-muted text-xs tracking-widest uppercase mb-5 mt-6 font-lato">
+        Choose a category
       </p>
 
       {loading ? (
@@ -87,10 +86,8 @@ function CategoryHome({ categories, loading, onSelect, lang }) {
 }
 
 /* ── Item row (list, no image) ─────────────────────────── */
-function ItemRow({ item, lang, isRTL }) {
+function ItemRow({ item }) {
   const { format, currency } = useCurrency()
-  const name = lang === 'ar' ? item.name_ar : item.name_en
-  const description = lang === 'ar' ? item.description_ar : item.description_en
   const isUnavailable = item.status === 'unavailable'
   const isComingSoon = item.status === 'coming_soon'
 
@@ -98,23 +95,20 @@ function ItemRow({ item, lang, isRTL }) {
     <motion.div
       initial={{ opacity: 0, y: 6 }}
       animate={{ opacity: 1, y: 0 }}
-      className={`flex items-start justify-between gap-4 py-4 border-b border-surface-2 last:border-0
-        ${isUnavailable ? 'opacity-40' : ''}
-        ${isRTL ? 'flex-row-reverse' : ''}
-      `}
+      className={`flex items-start justify-between gap-4 py-4 border-b border-surface-2 last:border-0 ${isUnavailable ? 'opacity-40' : ''}`}
     >
       <div className="flex-1 min-w-0">
-        <p className={`text-text font-semibold text-sm leading-snug ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
-          {name}
+        <p className="text-text font-semibold text-sm leading-snug font-playfair">
+          {item.name_en}
         </p>
-        {description && (
-          <p className={`text-text-muted text-xs mt-0.5 leading-relaxed ${lang === 'ar' ? 'font-cairo' : ''}`}>
-            {description}
+        {item.description_en && (
+          <p className="text-text-muted text-xs mt-0.5 leading-relaxed">
+            {item.description_en}
           </p>
         )}
         {isComingSoon && (
           <span className="inline-block mt-1 text-xs text-gold border border-gold/30 rounded-full px-2 py-0.5">
-            {lang === 'ar' ? 'قريباً' : 'Coming Soon'}
+            Coming Soon
           </span>
         )}
       </div>
@@ -138,9 +132,7 @@ function ItemRow({ item, lang, isRTL }) {
 }
 
 /* ── Category items page ───────────────────────────────── */
-function CategoryPage({ category, items, lang, isRTL, onBack }) {
-  const name = lang === 'ar' ? category.name_ar : category.name_en
-
+function CategoryPage({ category, items, onBack }) {
   return (
     <motion.div
       initial={{ opacity: 0, x: 30 }}
@@ -150,27 +142,25 @@ function CategoryPage({ category, items, lang, isRTL, onBack }) {
       className="pb-8"
     >
       {/* Top bar */}
-      <div className={`flex items-center gap-3 px-4 py-4 sticky top-14 z-10 bg-[#FBF5EB] border-b border-surface-2 ${isRTL ? 'flex-row-reverse' : ''}`}>
+      <div className="flex items-center gap-3 px-4 py-4 sticky top-14 z-10 bg-[#FBF5EB] border-b border-surface-2">
         <button
           onClick={onBack}
           className="w-8 h-8 flex items-center justify-center rounded-full bg-surface-2 text-brown hover:bg-surface transition-colors text-sm"
         >
-          {isRTL ? '→' : '←'}
+          ←
         </button>
-        <h2 className={`text-brown font-bold text-lg ${lang === 'ar' ? 'font-cairo' : 'font-playfair'}`}>
-          {name}
+        <h2 className="text-brown font-bold text-lg font-playfair">
+          {category.name_en}
         </h2>
       </div>
 
       {/* Items list */}
       <div className="px-5 mt-2">
         {items.length === 0 ? (
-          <p className="text-text-muted text-sm py-12 text-center">
-            {lang === 'ar' ? 'لا توجد عناصر بعد' : 'No items yet.'}
-          </p>
+          <p className="text-text-muted text-sm py-12 text-center">No items yet.</p>
         ) : (
           items.map((item) => (
-            <ItemRow key={item.id} item={item} lang={lang} isRTL={isRTL} />
+            <ItemRow key={item.id} item={item} />
           ))
         )}
       </div>
@@ -180,8 +170,7 @@ function CategoryPage({ category, items, lang, isRTL, onBack }) {
 
 /* ── Main ──────────────────────────────────────────────── */
 export default function Menu() {
-  const { categories, items, loading, categoriesLoading, settingsLoading, itemsByCategory, settings } = useMenu()
-  const { lang, isRTL } = useLanguage()
+  const { categories, items, categoriesLoading, settingsLoading, itemsByCategory, settings } = useMenu()
   const [selectedCategoryId, setSelectedCategoryId] = useState(null)
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId)
@@ -189,7 +178,7 @@ export default function Menu() {
   return (
     <div className="min-h-screen" style={{ background: '#FBF5EB' }}>
       <MenuHeader />
-      <HeroSection lang={lang} settings={settings} settingsLoading={settingsLoading} />
+      <HeroSection settings={settings} settingsLoading={settingsLoading} />
 
       <div id="menu-section" className="menu-content">
         <AnimatePresence mode="wait">
@@ -198,8 +187,6 @@ export default function Menu() {
               key="category"
               category={selectedCategory}
               items={itemsByCategory(selectedCategoryId)}
-              lang={lang}
-              isRTL={isRTL}
               onBack={() => setSelectedCategoryId(null)}
             />
           ) : (
@@ -214,7 +201,6 @@ export default function Menu() {
                 categories={categories}
                 loading={categoriesLoading}
                 onSelect={setSelectedCategoryId}
-                lang={lang}
               />
             </motion.div>
           )}
@@ -222,7 +208,7 @@ export default function Menu() {
       </div>
 
       <BestSellers items={items} />
-      <AboutSection lang={lang} />
+      <AboutSection />
       <FloatingCurrencyToggle />
     </div>
   )
