@@ -78,7 +78,7 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
       <input value={form.name_en} onChange={set('name_en')} placeholder="Item Name" required className="input-field" />
       <input value={form.description_en} onChange={set('description_en')} placeholder="Description" className="input-field" />
       <div className="grid grid-cols-3 gap-3">
-        <input value={form.price} onChange={set('price')} placeholder="Price" type="number" step="0.01" required className="input-field" />
+        <input value={form.price} onChange={set('price')} placeholder="Price" type="number" step="0.01" min="0" required className="input-field" onWheel={(e) => e.target.blur()} />
         <select value={form.priceCurrency} onChange={set('priceCurrency')} className="input-field">
           {CURRENCY_OPTIONS.map((c) => <option key={c.value} value={c.value}>{c.label}</option>)}
         </select>
