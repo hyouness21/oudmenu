@@ -96,9 +96,9 @@ function ItemCard({ item, index }) {
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.07 }}
-      className={`bg-white rounded-2xl p-4 flex flex-col items-center text-center shadow-sm border border-surface-2 ${isUnavailable ? 'opacity-40' : ''}`}
+      className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-surface-2 flex flex-col ${isUnavailable ? 'opacity-40' : ''}`}
     >
-      <div className="w-28 h-28 rounded-full overflow-hidden bg-surface mb-3 flex-shrink-0">
+      <div className="w-full aspect-square bg-surface-2 flex-shrink-0">
         {item.imageUrl ? (
           <img
             src={item.imageUrl}
@@ -107,41 +107,42 @@ function ItemCard({ item, index }) {
             style={{ objectPosition: `${item.imagePosition?.x ?? 50}% ${item.imagePosition?.y ?? 50}%` }}
           />
         ) : (
-          <div className="w-full h-full flex items-center justify-center bg-surface-2">
-            <span className="text-2xl opacity-20">☕</span>
+          <div className="w-full h-full flex items-center justify-center">
+            <span className="text-3xl opacity-20">☕</span>
           </div>
         )}
       </div>
 
-      <h3 className="font-semibold text-brown text-xs leading-snug mb-1 line-clamp-2 font-playfair">
-        {item.name_en}
-      </h3>
-
-      {item.description_en && (
-        <p className="text-text-muted text-xs leading-relaxed line-clamp-2 mb-2">
-          {item.description_en}
+      <div className="p-3 flex flex-col flex-1">
+        <p className="text-text font-semibold text-sm leading-snug font-playfair line-clamp-2">
+          {item.name_en}
         </p>
-      )}
-
-      <div className="mt-auto pt-1">
-        {isComingSoon ? (
-          <span className="text-xs text-gold border border-gold/30 rounded-full px-2 py-0.5">
-            Coming Soon
-          </span>
-        ) : (
-          <AnimatePresence mode="wait">
-            <motion.p
-              key={currency}
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.15 }}
-              className="text-brown font-bold text-xs"
-            >
-              {format(item.price, item.priceCurrency)}
-            </motion.p>
-          </AnimatePresence>
+        {item.description_en && (
+          <p className="text-text-muted text-xs mt-1 leading-relaxed line-clamp-2">
+            {item.description_en}
+          </p>
         )}
+
+        <div className="mt-auto pt-2">
+          {isComingSoon ? (
+            <span className="text-xs text-gold border border-gold/30 rounded-full px-2 py-0.5">
+              Coming Soon
+            </span>
+          ) : (
+            <AnimatePresence mode="wait">
+              <motion.p
+                key={currency}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                transition={{ duration: 0.15 }}
+                className="text-brown font-bold text-sm"
+              >
+                {format(item.price, item.priceCurrency)}
+              </motion.p>
+            </AnimatePresence>
+          )}
+        </div>
       </div>
     </motion.div>
   )
