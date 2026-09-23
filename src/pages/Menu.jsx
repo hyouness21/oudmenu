@@ -106,19 +106,33 @@ function ItemCard({ item, index }) {
       transition={{ duration: 0.25, delay: index * 0.07 }}
       className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-surface-2 flex flex-col ${isUnavailable ? 'opacity-40' : ''}`}
     >
-      <div className="w-full aspect-square bg-surface-2 flex-shrink-0">
-        {imageUrl ? (
-          <img
-            src={imageUrl}
-            alt={item.name_en}
-            className="w-full h-full object-cover"
-            style={{ objectPosition: `${imagePosition?.x ?? 50}% ${imagePosition?.y ?? 50}%` }}
-          />
-        ) : (
-          <div className="w-full h-full flex items-center justify-center">
-            <span className="text-3xl opacity-20">☕</span>
-          </div>
-        )}
+      <div className="w-full aspect-square bg-surface-2 flex-shrink-0 relative overflow-hidden">
+        <AnimatePresence mode="wait">
+          {imageUrl ? (
+            <motion.img
+              key={selectedVariant}
+              src={imageUrl}
+              alt={item.name_en}
+              initial={{ opacity: 0, scale: 1.06 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.96 }}
+              transition={{ duration: 0.3, ease: 'easeInOut' }}
+              className="absolute inset-0 w-full h-full object-cover"
+              style={{ objectPosition: `${imagePosition?.x ?? 50}% ${imagePosition?.y ?? 50}%` }}
+            />
+          ) : (
+            <motion.div
+              key="placeholder"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              className="absolute inset-0 w-full h-full flex items-center justify-center"
+            >
+              <span className="text-3xl opacity-20">☕</span>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
 
       <div className="p-3 flex flex-col flex-1">
