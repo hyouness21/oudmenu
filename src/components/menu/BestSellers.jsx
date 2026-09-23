@@ -4,6 +4,11 @@ import { useCurrency } from '../../contexts/CurrencyContext'
 
 function BestSellerCard({ item, index }) {
   const { format, currency } = useCurrency()
+  const first = item.variants?.[0]
+  const imageUrl = first ? first.imageUrl : item.imageUrl
+  const imagePosition = first ? first.imagePosition : item.imagePosition
+  const price = first ? first.price : item.price
+  const priceCurrency = first ? first.priceCurrency : item.priceCurrency
 
   return (
     <motion.div
@@ -13,12 +18,12 @@ function BestSellerCard({ item, index }) {
       className="bg-white rounded-2xl p-4 flex flex-col items-center text-center shadow-sm border border-surface-2 flex-shrink-0 w-40"
     >
       <div className="w-28 h-28 rounded-full overflow-hidden bg-surface mb-3 flex-shrink-0">
-        {item.imageUrl ? (
+        {imageUrl ? (
           <img
-            src={item.imageUrl}
+            src={imageUrl}
             alt={item.name_en}
             className="w-full h-full object-cover"
-            style={{ objectPosition: `${item.imagePosition?.x ?? 50}% ${item.imagePosition?.y ?? 50}%` }}
+            style={{ objectPosition: `${imagePosition?.x ?? 50}% ${imagePosition?.y ?? 50}%` }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center bg-surface-2">
@@ -46,7 +51,7 @@ function BestSellerCard({ item, index }) {
           transition={{ duration: 0.15 }}
           className="text-brown font-bold text-xs mt-auto"
         >
-          {format(item.price, item.priceCurrency)}
+          {format(price, priceCurrency)}
         </motion.p>
       </AnimatePresence>
     </motion.div>

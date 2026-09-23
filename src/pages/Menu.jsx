@@ -90,6 +90,14 @@ function ItemCard({ item, index }) {
   const { format, currency } = useCurrency()
   const isUnavailable = item.status === 'unavailable'
   const isComingSoon = item.status === 'coming_soon'
+  const hasVariants = item.variants?.length > 0
+  const [selectedVariant, setSelectedVariant] = useState(0)
+
+  const active = hasVariants ? item.variants[selectedVariant] : null
+  const imageUrl = active ? active.imageUrl : item.imageUrl
+  const imagePosition = active ? active.imagePosition : item.imagePosition
+  const price = active ? active.price : item.price
+  const priceCurrency = active ? active.priceCurrency : item.priceCurrency
 
   return (
     <motion.div
@@ -99,12 +107,12 @@ function ItemCard({ item, index }) {
       className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-surface-2 flex flex-col ${isUnavailable ? 'opacity-40' : ''}`}
     >
       <div className="w-full aspect-square bg-surface-2 flex-shrink-0">
-        {item.imageUrl ? (
+        {imageUrl ? (
           <img
-            src={item.imageUrl}
+            src={imageUrl}
             alt={item.name_en}
             className="w-full h-full object-cover"
-            style={{ objectPosition: `${item.imagePosition?.x ?? 50}% ${item.imagePosition?.y ?? 50}%` }}
+            style={{ objectPosition: `${imagePosition?.x ?? 50}% ${imagePosition?.y ?? 50}%` }}
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
@@ -123,6 +131,20 @@ function ItemCard({ item, index }) {
           </p>
         )}
 
+        {hasVariants && (
+          <div className="flex flex-wrap gap-1 mt-2">
+            {item.variants.map((v, i) => (
+              <button
+                key={i}
+                onClick={() => setSelectedVariant(i)}
+                className={`text-xs px-2 py-0.5 rounded-full border transition-all ${selectedVariant === i ? 'bg-brown text-white border-brown' : 'border-brown/30 text-brown hover:bg-brown/5'}`}
+              >
+                {v.name}
+              </button>
+            ))}
+          </div>
+        )}
+
         <div className="mt-auto pt-2">
           {isComingSoon ? (
             <span className="text-xs text-gold border border-gold/30 rounded-full px-2 py-0.5">
@@ -131,14 +153,14 @@ function ItemCard({ item, index }) {
           ) : (
             <AnimatePresence mode="wait">
               <motion.p
-                key={currency}
+                key={`${currency}-${selectedVariant}`}
                 initial={{ opacity: 0 }}
                 animate={{ opacity: 1 }}
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.15 }}
                 className="text-brown font-bold text-sm"
               >
-                {format(item.price, item.priceCurrency)}
+                {format(price, priceCurrency)}
               </motion.p>
             </AnimatePresence>
           )}
