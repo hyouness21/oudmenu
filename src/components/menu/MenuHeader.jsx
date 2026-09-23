@@ -12,7 +12,7 @@ export default function MenuHeader() {
 
         {/* Logo — left */}
         <Link to="/admin">
-          <Logo variant="white" className="h-8 w-auto" />
+          <Logo variant="gold" className="h-8 w-auto" />
         </Link>
 
         {/* Actions — right */}
