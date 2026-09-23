@@ -50,7 +50,7 @@ function HeroSection({ settings, settingsLoading }) {
             animate={{ filter: ['drop-shadow(0 0 6px rgba(201,168,76,0.2))', 'drop-shadow(0 0 18px rgba(201,168,76,0.7))', 'drop-shadow(0 0 6px rgba(201,168,76,0.2))'] }}
             transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
           >
-            <Logo variant="white" className="w-48 max-w-xs mb-3" />
+            <Logo variant="gold" className="w-48 max-w-xs mb-3" />
           </motion.div>
         </Link>
         <p className="text-white/40 text-xs tracking-[0.25em] uppercase font-lato">
