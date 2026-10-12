@@ -58,16 +58,16 @@ export default function AboutSection() {
             </div>
             <div>
               <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">Location</p>
-              <p className="text-white/50 text-xs leading-5 font-lato">
+              <a href="https://maps.app.goo.gl/oMJboQstgNzDoMyP9" className="text-white/50 text-xs leading-5 font-lato">
                 Lebanon, Hay Made<br />Beside Khaymat Mouwad
-              </p>
+              </a>
             </div>
             <div>
               <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">Contact</p>
-              <a href="tel:+81874651" className="text-white/50 text-xs leading-5 font-lato block hover:text-gold transition-colors">
-                +81 874 651
+              <a href="tel:+9613941559" className="text-white/50 text-xs leading-5 font-lato block hover:text-gold transition-colors">
+                +961 03941559
               </a>
-              <a href="https://wa.me/81874651" className="text-gold/70 text-xs block mt-1 hover:text-gold transition-colors font-lato">
+              <a href="https://wa.me/3941559" className="text-gold/70 text-xs block mt-1 hover:text-gold transition-colors font-lato">
                 WhatsApp ↗
               </a>
             </div>
@@ -88,13 +88,13 @@ export default function AboutSection() {
 
           {/* Social icons */}
           <div className="flex justify-center gap-5 mb-6">
-            <a href="#" aria-label="Instagram" className="text-white/30 hover:text-gold transition-colors">
+            <a href="https://www.instagram.com/oudlb_?vrfl=cGQ3NGFkbTN3bnB2" aria-label="Instagram" className="text-white/30 hover:text-gold transition-colors">
               <InstagramIcon />
             </a>
-            <a href="#" aria-label="Facebook" className="text-white/30 hover:text-gold transition-colors">
+            <a href="https://www.facebook.com/share/1KtRvfahko/?mibextid=wwXIfr" aria-label="Facebook" className="text-white/30 hover:text-gold transition-colors">
               <FacebookIcon />
             </a>
-            <a href="#" aria-label="TikTok" className="text-white/30 hover:text-gold transition-colors">
+            <a href=" https://www.tiktok.com/@rolaowxy9dc?_r=1&_t=ZS-9APR14Dl3ED" aria-label="TikTok" className="text-white/30 hover:text-gold transition-colors">
               <TikTokIcon />
             </a>
           </div>
