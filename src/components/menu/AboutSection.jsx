@@ -53,7 +53,7 @@ export default function AboutSection() {
             <div>
               <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">Hours</p>
               <p className="text-white/50 text-xs leading-5 font-lato">
-                Mon – Fri<br />8am – 11pm<br />Sat – Sun<br />9am – 12am
+                Mon – Sun<br />7am – 3pm<br />
               </p>
             </div>
             <div>
