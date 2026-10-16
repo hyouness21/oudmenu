@@ -5,7 +5,6 @@ import { useMenu } from '../contexts/MenuContext'
 import { useCurrency } from '../contexts/CurrencyContext'
 import MenuHeader from '../components/menu/MenuHeader'
 import CategoryCarousel from '../components/menu/CategoryCarousel'
-import FloatingCurrencyToggle from '../components/menu/FloatingCurrencyToggle'
 import DallahDecoration from '../components/menu/DallahDecoration'
 import IslamicPattern from '../components/shared/IslamicPattern'
 import Logo from '../components/shared/Logo'
@@ -87,7 +86,7 @@ function CategoryHome({ categories, loading, onSelect }) {
 
 /* ── Item card (2-col grid) ────────────────────────────── */
 function ItemCard({ item, index }) {
-  const { format, currency } = useCurrency()
+  const { format } = useCurrency()
   const isUnavailable = item.status === 'unavailable'
   const isComingSoon = item.status === 'coming_soon'
   const hasVariants = item.variants?.length > 0
@@ -165,18 +164,15 @@ function ItemCard({ item, index }) {
               Coming Soon
             </span>
           ) : (
-            <AnimatePresence mode="wait">
-              <motion.p
-                key={`${currency}-${selectedVariant}`}
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 0.15 }}
-                className="text-brown font-bold text-sm"
-              >
-                {format(price, priceCurrency)}
-              </motion.p>
-            </AnimatePresence>
+            <motion.p
+              key={selectedVariant}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.15 }}
+              className="text-brown font-bold text-sm"
+            >
+              {format(price, priceCurrency)}
+            </motion.p>
           )}
         </div>
       </div>
@@ -264,7 +260,6 @@ export default function Menu() {
 
       <BestSellers items={items} />
       <AboutSection />
-      <FloatingCurrencyToggle />
     </div>
   )
 }

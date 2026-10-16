@@ -1,9 +1,9 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { motion } from 'framer-motion'
 import { useCurrency } from '../../contexts/CurrencyContext'
 
 function BestSellerCard({ item, index }) {
-  const { format, currency } = useCurrency()
+  const { format } = useCurrency()
   const first = item.variants?.[0]
   const imageUrl = first ? first.imageUrl : item.imageUrl
   const imagePosition = first ? first.imagePosition : item.imagePosition
@@ -42,18 +42,9 @@ function BestSellerCard({ item, index }) {
         </p>
       )}
 
-      <AnimatePresence mode="wait">
-        <motion.p
-          key={currency}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.15 }}
-          className="text-brown font-bold text-xs mt-auto"
-        >
-          {format(price, priceCurrency)}
-        </motion.p>
-      </AnimatePresence>
+      <p className="text-brown font-bold text-xs mt-auto">
+        {format(price, priceCurrency)}
+      </p>
     </motion.div>
   )
 }
