@@ -7,10 +7,9 @@ export default function MenuHeader() {
   const { currency, toggleCurrency } = useCurrency()
 
   return (
-    <header className="sticky top-0 z-30 bg-[#120C05]/25 backdrop-blur-md border-b border-white/10">
-      <div className="flex items-center justify-between px-5 h-14">
+    <header className="sticky top-0 z-30 bg-[#dbe2d6] border-b border-black/10">
+      <div className="flex items-center justify-center px-5 h-14">
 
-        {/* Logo — left */}
         <Link to="/admin">
           <Logo variant="gold" className="h-8 w-auto" />
         </Link>
