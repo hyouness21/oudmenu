@@ -35,7 +35,7 @@ export default function AboutSection() {
             that truly matter. Our drinks are crafted with care, and our space is designed
             to be your daily refuge for comfort and connection.
           </p>
-          <p className="text-brown/40 text-sm mt-8 italic font-playfair">— The Oud Team</p>
+          <p className="text-brown/40 text-sm mt-8 italic font-playfair">— By Rola Ch</p>
         </div>
       </section>
 
