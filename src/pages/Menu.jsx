@@ -42,10 +42,10 @@ function HeroSection({ settings, settingsLoading }) {
       )}
 
       <div className="relative z-10 flex flex-col pt-24 pb-10 px-8" style={{ fontFamily: 'Philosopher, serif' }}>
-        <p className="text-white text-4xl font-normal mb-0 leading-none">
+        <h1 className="text-white text-3xl font-normal mb-0 leading-none">
           Welcome To OUD
-        </p>
-        <h1 className="text-white text-3xl font-normal -mt-2 ml-1 leading-tight">
+        </h1>
+        <h1 className="text-white text-2xl font-normal mt-0 ml-1 leading-tight">
           Beirut Coffee Lounge
         </h1>
       </div>
