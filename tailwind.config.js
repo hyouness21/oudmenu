@@ -26,6 +26,7 @@ export default {
       },
       fontFamily: {
         playfair: ['"Playfair Display"', 'serif'],
+        philosopher: ['Philosopher', 'serif'],
         lato: ['Lato', 'sans-serif'],
         cairo: ['Cairo', 'sans-serif'],
       },
