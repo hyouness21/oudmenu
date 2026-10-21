@@ -16,7 +16,7 @@ function HeroSection({ settings, settingsLoading }) {
   const hasPhoto = !!heroBg.imageUrl
 
   return (
-    <section className="relative bg-[#120C05] overflow-hidden -mt-14">
+    <section className="relative bg-[#120C05] overflow-hidden -mt-14 h-80">
       {!settingsLoading && (
         hasPhoto ? (
           <>
@@ -26,7 +26,7 @@ function HeroSection({ settings, settingsLoading }) {
               className="absolute inset-0 w-full h-full object-cover pointer-events-none"
               style={{ objectPosition: `${heroBg.imagePosition?.x ?? 50}% ${heroBg.imagePosition?.y ?? 50}%` }}
             />
-            <div className="absolute inset-0 bg-black/60 pointer-events-none" />
+            <div className="absolute inset-0 bg-black/30 pointer-events-none" />
           </>
         ) : (
           <>
@@ -41,7 +41,7 @@ function HeroSection({ settings, settingsLoading }) {
         )
       )}
 
-      <div className="relative z-10 flex flex-col pt-24 pb-10 px-8" style={{ fontFamily: 'Philosopher, serif' }}>
+      <div className="absolute inset-0 z-10 flex flex-col justify-end pb-6 px-8" style={{ fontFamily: 'Philosopher, serif' }}>
         <h1 className="text-white text-3xl font-normal mb-0 leading-none">
           Welcome To OUD
         </h1>
@@ -50,10 +50,6 @@ function HeroSection({ settings, settingsLoading }) {
         </h1>
       </div>
 
-      <div className="relative h-8">
-        <div className="absolute bottom-0 left-0 right-0 h-12 bg-[#FBF5EB]"
-          style={{ borderRadius: '50% 50% 0 0 / 100% 100% 0 0' }} />
-      </div>
     </section>
   )
 }
