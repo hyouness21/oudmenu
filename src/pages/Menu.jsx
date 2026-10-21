@@ -1,13 +1,11 @@
 import { useState } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
-import { Link } from 'react-router-dom'
 import { useMenu } from '../contexts/MenuContext'
 import { useCurrency } from '../contexts/CurrencyContext'
 import MenuHeader from '../components/menu/MenuHeader'
 import CategoryCarousel from '../components/menu/CategoryCarousel'
 import DallahDecoration from '../components/menu/DallahDecoration'
 import IslamicPattern from '../components/shared/IslamicPattern'
-import Logo from '../components/shared/Logo'
 import AboutSection from '../components/menu/AboutSection'
 import BestSellers from '../components/menu/BestSellers'
 import './menu.css'
@@ -44,17 +42,6 @@ function HeroSection({ settings, settingsLoading }) {
       )}
 
       <div className="relative z-10 flex flex-col items-center justify-center pt-24 pb-10 px-6 text-center">
-        <Link to="/admin">
-          <motion.div
-            animate={{ filter: ['drop-shadow(0 0 6px rgba(201,168,76,0.2))', 'drop-shadow(0 0 18px rgba(201,168,76,0.7))', 'drop-shadow(0 0 6px rgba(201,168,76,0.2))'] }}
-            transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
-          >
-            <Logo variant="gold" className="w-48 max-w-xs mb-3" />
-          </motion.div>
-        </Link>
-        <p className="text-white/40 text-xs tracking-[0.25em] uppercase font-lato">
-          Coffee & More
-        </p>
       </div>
 
       <div className="relative h-8">
