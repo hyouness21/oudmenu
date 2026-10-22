@@ -42,7 +42,7 @@ export default function AboutSection() {
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#7a9468] pt-12 pb-8 px-6">
+      <footer className="bg-[#879e76] pt-12 pb-8 px-6">
         <div className="max-w-xl mx-auto">
 
           {/* Logo */}
