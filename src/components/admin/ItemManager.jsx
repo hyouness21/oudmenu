@@ -112,6 +112,7 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
     imageUrl: initial?.imageUrl ?? '',
     imagePosition: initial?.imagePosition ?? { x: 50, y: 50 },
     isBestSeller: initial?.isBestSeller ?? false,
+    isOudBox: initial?.isOudBox ?? false,
   })
   const [saving, setSaving] = useState(false)
   const [imageFile, setImageFile] = useState(null)
@@ -231,6 +232,26 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
         <span className="text-sm text-text">Mark as Best Seller ⭐</span>
       </label>
 
+      <label className="flex items-center gap-2 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={form.isOudBox}
+          onChange={(e) => setForm((f) => ({ ...f, isOudBox: e.target.checked }))}
+          className="w-4 h-4 accent-brown"
+        />
+        <span className="text-sm text-text">Include in OUD BOX 📦</span>
+      </label>
+
+      <label className="flex items-center gap-2 cursor-pointer select-none">
+        <input
+          type="checkbox"
+          checked={form.isOudBox}
+          onChange={(e) => setForm((f) => ({ ...f, isOudBox: e.target.checked }))}
+          className="w-4 h-4 accent-brown"
+        />
+        <span className="text-sm text-text">Include in OUD BOX 📦</span>
+      </label>
+
       {error && <p className="text-red-500 text-xs px-1">{error}</p>}
       <div className="flex gap-2">
         <button type="submit" disabled={saving} className="btn-primary flex-1">{saving ? 'Saving...' : 'Save'}</button>
@@ -255,6 +276,8 @@ function SortableItem({ item, categories, onEdit, onDelete }) {
         <div className="flex items-center gap-2">
           <p className="text-text font-medium text-sm truncate">{item.name_en}</p>
           {item.isBestSeller && <span className="text-xs">⭐</span>}
+          {item.isOudBox && <span className="text-xs">📦</span>}
+          {item.isOudBox && <span className="text-xs">📦</span>}
           {hasVariants && <span className="text-xs text-gold bg-gold/10 px-1.5 py-0.5 rounded-full">variants</span>}
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[item.status]}`}>
             {STATUS_OPTIONS.find(s => s.value === item.status)?.label}

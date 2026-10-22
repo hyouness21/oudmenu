@@ -8,6 +8,8 @@ import DallahDecoration from '../components/menu/DallahDecoration'
 import IslamicPattern from '../components/shared/IslamicPattern'
 import AboutSection from '../components/menu/AboutSection'
 import BestSellers from '../components/menu/BestSellers'
+import OudBoxPage from '../components/menu/OudBoxPage'
+import FloatingMusicPlayer from '../components/menu/FloatingMusicPlayer'
 import './menu.css'
 
 /* ── Hero ──────────────────────────────────────────────── */
@@ -16,7 +18,7 @@ function HeroSection({ settings, settingsLoading }) {
   const hasPhoto = !!heroBg.imageUrl
 
   return (
-    <section className="relative bg-[#120C05] overflow-hidden -mt-14 h-80">
+    <section className="relative bg-white overflow-hidden -mt-14 h-80">
       {!settingsLoading && (
         hasPhoto ? (
           <>
@@ -57,8 +59,8 @@ function HeroSection({ settings, settingsLoading }) {
 /* ── Category home (carousel) ──────────────────────────── */
 function CategoryHome({ categories, loading, onSelect }) {
   return (
-    <div className="pb-8">
-      <p className="text-center text-text-muted text-xs tracking-widest uppercase mb-5 mt-6 font-lato">
+    <div className="pb-8 bg-white">
+      <p className="text-center text-xs tracking-widest uppercase mb-5 mt-6 font-lato" style={{ color: '#5f6430' }}>
         Choose a category
       </p>
 
@@ -210,25 +212,37 @@ function CategoryPage({ category, items, onBack }) {
 
 /* ── Main ──────────────────────────────────────────────── */
 export default function Menu() {
-  const { categories, items, categoriesLoading, settingsLoading, itemsByCategory, settings } = useMenu()
+  const { categories, items, loading: itemsLoading, categoriesLoading, settingsLoading, itemsByCategory, settings } = useMenu()
   const [selectedCategoryId, setSelectedCategoryId] = useState(null)
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId)
 
   return (
-    <div className="min-h-screen" style={{ background: '#FBF5EB' }}>
+    <div className="min-h-screen bg-white">
       <MenuHeader />
-      <HeroSection settings={settings} settingsLoading={settingsLoading} />
+      {!selectedCategoryId && <HeroSection settings={settings} settingsLoading={settingsLoading} />}
 
       <div id="menu-section" className="menu-content">
         <AnimatePresence mode="wait">
-          {selectedCategoryId && selectedCategory ? (
-            <CategoryPage
-              key="category"
-              category={selectedCategory}
-              items={itemsByCategory(selectedCategoryId)}
-              onBack={() => setSelectedCategoryId(null)}
-            />
+          {selectedCategoryId === '__oudbox__' ? (
+            <div className="min-h-screen bg-[#D8DFD2]">
+              <OudBoxPage
+                key="oudbox"
+                categories={categories}
+                items={items}
+                loading={itemsLoading}
+                onBack={() => setSelectedCategoryId(null)}
+              />
+            </div>
+          ) : selectedCategoryId && selectedCategory ? (
+            <div className="min-h-screen bg-[#D8DFD2]">
+              <CategoryPage
+                key="category"
+                category={selectedCategory}
+                items={itemsByCategory(selectedCategoryId)}
+                onBack={() => setSelectedCategoryId(null)}
+              />
+            </div>
           ) : (
             <motion.div
               key="home"
@@ -247,8 +261,9 @@ export default function Menu() {
         </AnimatePresence>
       </div>
 
-      <BestSellers items={items} />
-      <AboutSection />
+      {!selectedCategoryId && <BestSellers items={items} />}
+      {!selectedCategoryId && <AboutSection />}
+      <FloatingMusicPlayer />
     </div>
   )
 }

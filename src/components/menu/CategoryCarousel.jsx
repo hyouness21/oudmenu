@@ -1,150 +1,143 @@
-import { useRef, useEffect } from 'react'
-
-const REPS = 6
-const SPEED = 0.6
-
 export default function CategoryCarousel({ categories, onSelect }) {
-  const trackRef = useRef(null)
-  const posRef = useRef(0)
-  const pausedRef = useRef(false)
-  const rafRef = useRef(null)
-  const oneSetWidthRef = useRef(0)
-  const dragRef = useRef(null) // { lastX, moved }
-
-  const track = Array(REPS).fill(categories).flat()
-
-  const wrap = (pos) => {
-    const w = oneSetWidthRef.current
-    if (w <= 0) return pos
-    pos = pos % w
-    if (pos < 0) pos += w
-    return pos
-  }
-
-  useEffect(() => {
-    const el = trackRef.current
-    if (!el || !categories.length) return
-
-    requestAnimationFrame(() => {
-      oneSetWidthRef.current = el.scrollWidth / REPS
-    })
-
-    const animate = () => {
-      if (!pausedRef.current && oneSetWidthRef.current > 0) {
-        posRef.current += SPEED
-        if (posRef.current >= oneSetWidthRef.current) posRef.current -= oneSetWidthRef.current
-        el.style.transform = `translateX(-${posRef.current}px)`
-      }
-      rafRef.current = requestAnimationFrame(animate)
-    }
-    rafRef.current = requestAnimationFrame(animate)
-
-    /* ── Mouse ── */
-    const onMouseDown = (e) => {
-      dragRef.current = { lastX: e.clientX, moved: false }
-      pausedRef.current = true
-      el.style.cursor = 'grabbing'
-    }
-    const onMouseMove = (e) => {
-      if (!dragRef.current) return
-      const dx = dragRef.current.lastX - e.clientX
-      dragRef.current.lastX = e.clientX
-      if (Math.abs(dx) > 2) dragRef.current.moved = true
-      posRef.current = wrap(posRef.current + dx)
-      el.style.transform = `translateX(-${posRef.current}px)`
-    }
-    const onMouseUp = () => {
-      if (!dragRef.current) return
-      el.style.cursor = 'grab'
-      dragRef.current = null
-      setTimeout(() => { pausedRef.current = false }, 400)
-    }
-    const onMouseLeave = () => {
-      if (dragRef.current) { dragRef.current = null; el.style.cursor = 'grab' }
-      pausedRef.current = false
-    }
-
-    /* ── Touch ── */
-    const onTouchStart = (e) => {
-      dragRef.current = { lastX: e.touches[0].clientX, startX: e.touches[0].clientX, moved: false }
-      pausedRef.current = true
-    }
-    const onTouchMove = (e) => {
-      if (!dragRef.current) return
-      const dx = dragRef.current.lastX - e.touches[0].clientX
-      dragRef.current.lastX = e.touches[0].clientX
-      if (Math.abs(e.touches[0].clientX - dragRef.current.startX) > 5) dragRef.current.moved = true
-      posRef.current = wrap(posRef.current + dx)
-      el.style.transform = `translateX(-${posRef.current}px)`
-    }
-    const onTouchEnd = (e) => {
-      if (!dragRef.current) return
-      const wasTap = !dragRef.current.moved
-      dragRef.current = null
-      if (wasTap) {
-        const btn = e.target.closest('[data-catid]')
-        if (btn) onSelect(btn.dataset.catid)
-      }
-      setTimeout(() => { pausedRef.current = false }, 500)
-    }
-
-    el.addEventListener('mousedown', onMouseDown)
-    window.addEventListener('mousemove', onMouseMove)
-    window.addEventListener('mouseup', onMouseUp)
-    el.addEventListener('mouseleave', onMouseLeave)
-    el.addEventListener('touchstart', onTouchStart, { passive: true })
-    el.addEventListener('touchmove', onTouchMove, { passive: true })
-    el.addEventListener('touchend', onTouchEnd)
-
-    return () => {
-      cancelAnimationFrame(rafRef.current)
-      el.removeEventListener('mousedown', onMouseDown)
-      window.removeEventListener('mousemove', onMouseMove)
-      window.removeEventListener('mouseup', onMouseUp)
-      el.removeEventListener('mouseleave', onMouseLeave)
-      el.removeEventListener('touchstart', onTouchStart)
-      el.removeEventListener('touchmove', onTouchMove)
-      el.removeEventListener('touchend', onTouchEnd)
-    }
-  }, [categories])
-
   if (!categories.length) return null
 
   return (
-    <div className="overflow-hidden w-full" style={{ cursor: 'grab' }} dir="ltr">
-      <div ref={trackRef} className="flex" style={{ willChange: 'transform' }}>
-        {track.map((cat, i) => {
-          const name = cat.name_en
-          return (
-            <button
-              key={`${cat.id}-${i}`}
-              data-catid={cat.id}
-              onClick={() => {
-                if (dragRef.current?.moved) return
-                onSelect(cat.id)
-              }}
-              className="flex-shrink-0 w-44 h-56 relative rounded-2xl overflow-hidden mx-2 focus:outline-none"
-              style={{ WebkitTapHighlightColor: 'transparent' }}
-            >
-              {cat.imageUrl ? (
-                <img
-                  src={cat.imageUrl}
-                  alt={name}
-                  className="w-full h-full object-cover pointer-events-none"
-                  style={{ objectPosition: `${cat.imagePosition?.x ?? 50}% ${cat.imagePosition?.y ?? 50}%` }}
-                />
-              ) : (
-                <div className="w-full h-full bg-gradient-to-br from-[#2D1E14] to-[#120C05]" />
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/10 to-transparent pointer-events-none" />
-              <div className="absolute bottom-0 left-0 right-0 p-3 text-center pointer-events-none">
-                <p className="text-white font-bold text-sm drop-shadow-lg font-playfair">
-                  {name}
-                </p>
-              </div>
-            </button>
-          )
-        })}
+    <div style={{ padding: '0 16px' }}>
+
+      {/* SVG defs — rendered once, referenced by every button */}
+      <svg width="0" height="0" style={{ position: 'absolute' }} aria-hidden="true">
+        <defs>
+          <pattern id="rugBand" patternUnits="userSpaceOnUse" width="107.6" height="80">
+            <image href="/rug-band.png" width="107.6" height="80" preserveAspectRatio="none" />
+          </pattern>
+          <path
+            id="rugFrame"
+            d="M100,1 C106,1 109,9 116,9 L166,9 C166,18 172,23 182,23 C184,31 192,36 199,40
+               C192,44 184,49 182,57 C172,57 166,62 166,71 L116,71 C109,71 106,79 100,79
+               C94,79 91,71 84,71 L34,71 C34,62 28,57 18,57 C16,49 8,44 1,40
+               C8,36 16,31 18,23 C28,23 34,18 34,9 L84,9 C91,9 94,1 100,1Z"
+          />
+        </defs>
+      </svg>
+
+      {/* 2-column grid */}
+      <div style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(2, 1fr)',
+        gap: '12px',
+        justifyItems: 'center',
+      }}>
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            onClick={() => onSelect(cat.id)}
+            style={{
+              position: 'relative',
+              width: '100%',
+              maxWidth: '240px',
+              cursor: 'pointer',
+              border: 'none',
+              background: 'none',
+              padding: 0,
+              filter: 'drop-shadow(0 2px 3px rgba(0,0,0,.2))',
+              transition: 'transform .15s, filter .15s',
+              WebkitTapHighlightColor: 'transparent',
+            }}
+            onMouseEnter={e => {
+              e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)'
+              e.currentTarget.style.filter = 'drop-shadow(0 5px 7px rgba(0,0,0,.25)) brightness(1.06)'
+            }}
+            onMouseLeave={e => {
+              e.currentTarget.style.transform = ''
+              e.currentTarget.style.filter = 'drop-shadow(0 2px 3px rgba(0,0,0,.2))'
+            }}
+            onMouseDown={e => { e.currentTarget.style.transform = 'scale(.97)' }}
+            onMouseUp={e => { e.currentTarget.style.transform = '' }}
+          >
+            <svg viewBox="-2 -2 204 84" aria-hidden="true" style={{ display: 'block', width: '100%', height: 'auto' }}>
+              <use href="#rugFrame" fill="url(#rugBand)" stroke="none" />
+              <use href="#rugFrame" transform="translate(100 40) scale(.9 .76) translate(-100 -40)" fill="#f7f2e2" />
+              <use href="#rugFrame" transform="translate(100 40) scale(.95 .87) translate(-100 -40)" fill="none" stroke="#fffaf0" strokeWidth="1.6" vectorEffect="non-scaling-stroke" />
+            </svg>
+
+            {/* Label */}
+            <span style={{
+              position: 'absolute',
+              inset: 0,
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              padding: '0 22px',
+              textAlign: 'center',
+            }}>
+              <span style={{
+                fontFamily: 'Georgia, serif',
+                fontSize: 'clamp(13px, 3.5vw, 18px)',
+                color: '#5f6430',
+                lineHeight: 1.2,
+                overflow: 'hidden',
+                display: '-webkit-box',
+                WebkitLineClamp: 2,
+                WebkitBoxOrient: 'vertical',
+              }}>
+                {cat.name_en}
+              </span>
+            </span>
+          </button>
+        ))}
+
+        {/* OUD BOX — hardcoded special category */}
+        <button
+          onClick={() => onSelect('__oudbox__')}
+          style={{
+            position: 'relative',
+            width: '100%',
+            maxWidth: '240px',
+            cursor: 'pointer',
+            border: 'none',
+            background: 'none',
+            padding: 0,
+            filter: 'drop-shadow(0 2px 3px rgba(0,0,0,.2))',
+            transition: 'transform .15s, filter .15s',
+            WebkitTapHighlightColor: 'transparent',
+          }}
+          onMouseEnter={e => {
+            e.currentTarget.style.transform = 'translateY(-2px) scale(1.03)'
+            e.currentTarget.style.filter = 'drop-shadow(0 5px 7px rgba(0,0,0,.25)) brightness(1.06)'
+          }}
+          onMouseLeave={e => {
+            e.currentTarget.style.transform = ''
+            e.currentTarget.style.filter = 'drop-shadow(0 2px 3px rgba(0,0,0,.2))'
+          }}
+          onMouseDown={e => { e.currentTarget.style.transform = 'scale(.97)' }}
+          onMouseUp={e => { e.currentTarget.style.transform = '' }}
+        >
+          <svg viewBox="-2 -2 204 84" aria-hidden="true" style={{ display: 'block', width: '100%', height: 'auto' }}>
+            <use href="#rugFrame" fill="url(#rugBand)" stroke="none" />
+            <use href="#rugFrame" transform="translate(100 40) scale(.9 .76) translate(-100 -40)" fill="#f7f2e2" />
+            <use href="#rugFrame" transform="translate(100 40) scale(.95 .87) translate(-100 -40)" fill="none" stroke="#fffaf0" strokeWidth="1.6" vectorEffect="non-scaling-stroke" />
+          </svg>
+          <span style={{
+            position: 'absolute',
+            inset: 0,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            padding: '0 22px',
+            textAlign: 'center',
+          }}>
+            <span style={{
+              fontFamily: 'Georgia, serif',
+              fontSize: 'clamp(13px, 3.5vw, 18px)',
+              color: '#5f6430',
+              lineHeight: 1.2,
+              fontWeight: 'bold',
+              letterSpacing: '0.05em',
+            }}>
+              OUD BOX
+            </span>
+          </span>
+        </button>
       </div>
     </div>
   )

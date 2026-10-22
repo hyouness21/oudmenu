@@ -5,9 +5,9 @@ export default function MenuHeader() {
     <header className="sticky top-0 z-30 bg-[#D8DFD2] border-b border-black/10">
       <div className="flex items-center justify-center px-5 h-14">
 
-        <Link to="/admin">
+        
           <img src="/oud-logoo.png" alt="Oud" className="h-10 w-auto" />
-        </Link>
+        
 
       </div>
     </header>

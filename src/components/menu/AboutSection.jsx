@@ -24,28 +24,30 @@ export default function AboutSection() {
   return (
     <>
       {/* ── About Us ── */}
-      <section id="about-section" className="bg-[#E1CFB9] py-14 px-6">
+      <section id="about-section" className="bg-[#ced8c7] py-14 px-6">
         <div className="max-w-lg mx-auto text-center">
           <p className="text-brown/40 text-xs tracking-widest uppercase font-lato mb-1">Our Story</p>
           <h2 className="text-brown text-2xl font-bold mb-4 font-playfair">About Us</h2>
           <div className="h-px bg-brown/20 max-w-[80px] mx-auto mb-6" />
-          <p className="text-brown/70 text-sm leading-8 font-lato">
-            At Oud, we believe every cup of coffee tells a story. From the warmth of authentic
-            Arabic hospitality to every detail of our space, we strive to offer you moments
-            that truly matter. Our drinks are crafted with care, and our space is designed
-            to be your daily refuge for comfort and connection.
+          <p className="text-brown/70 text-sm leading-8 font-lato mb-4 text-center">
+            What started as a dream is finally here.
           </p>
-          <p className="text-brown/40 text-sm mt-8 italic font-playfair">— By Rola Ch</p>
+          <p className="text-brown font-bold text-lg font-playfair mb-4">OUD Café</p>
+          <p className="text-brown/70 text-sm leading-8 font-lato" style={{ textAlign: 'justify', hyphens: 'auto' }}>
+            We chose Dahye because of its lively energy and the people who make it feel like home.
+            We wanted Oud to be a place where you can calm, enjoy good food, meet your people,
+            and simply feel comfortable.
+          </p>
         </div>
       </section>
 
       {/* ── Footer ── */}
-      <footer className="bg-[#120C05] pt-12 pb-8 px-6">
+      <footer className="bg-[#7a9468] pt-12 pb-8 px-6">
         <div className="max-w-xl mx-auto">
 
           {/* Logo */}
           <div className="flex justify-center mb-8">
-            <Logo variant="white" className="w-20" />
+            <Logo variant="gold" className="w-20" />
           </div>
 
           {/* Info grid */}
@@ -53,7 +55,7 @@ export default function AboutSection() {
             <div>
               <p className="text-gold text-xs tracking-widest uppercase font-lato mb-3">Hours</p>
               <p className="text-white/50 text-xs leading-5 font-lato">
-                Mon – Sun<br />10am – 12am<br />
+                Daily<br />10am – 12am<br />
               </p>
             </div>
             <div>

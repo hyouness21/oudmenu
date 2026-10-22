@@ -69,7 +69,7 @@ export function MenuProvider({ children }) {
   }
 
   const itemsByCategory = (catId) =>
-    items.filter((i) => i.categoryId === catId).sort((a, b) => a.order - b.order)
+    items.filter((i) => i.categoryId === catId && !i.isOudBox).sort((a, b) => a.order - b.order)
 
   const updateSettings = (data) =>
     setDoc(doc(db, 'settings', 'appearance'), data, { merge: true })
