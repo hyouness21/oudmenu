@@ -1,48 +1,23 @@
-import { useState, useRef } from 'react'
+import { useState } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from '@dnd-kit/core'
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useMenu } from '../../contexts/MenuContext'
-import { uploadImage } from '../../utils/uploadImage'
-import ImageUploader from './ImageUploader'
 
 function CategoryForm({ initial, onSave, onCancel }) {
   const [nameEn, setNameEn] = useState(initial?.name_en ?? '')
-  const [imageFile, setImageFile] = useState(null)
-  const [imagePreview, setImagePreview] = useState(initial?.imageUrl ?? '')
-  const [imagePosition, setImagePosition] = useState(initial?.imagePosition ?? { x: 50, y: 50 })
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
-  const fileRef = useRef()
-
-  const handleImage = (e) => {
-    const file = e.target.files[0]
-    if (!file) return
-    setImageFile(file)
-    setImagePreview(URL.createObjectURL(file))
-  }
-
-  const removeImage = () => {
-    setImageFile(null)
-    setImagePreview('')
-    if (fileRef.current) fileRef.current.value = ''
-  }
 
   const handleSubmit = async (e) => {
     e.preventDefault()
     setSaving(true)
     setError('')
     try {
-      let imageUrl = initial?.imageUrl ?? ''
-      if (imageFile) {
-        imageUrl = await uploadImage(imageFile, { folder: 'categories' })
-      } else if (!imagePreview) {
-        imageUrl = ''
-      }
-      await onSave({ name_en: nameEn, imageUrl, imagePosition })
+      await onSave({ name_en: nameEn })
     } catch (err) {
-      setError(err.message || 'Failed to save. Try a smaller image.')
+      setError(err.message || 'Failed to save.')
       setSaving(false)
     }
   }
@@ -50,15 +25,6 @@ function CategoryForm({ initial, onSave, onCancel }) {
   return (
     <form onSubmit={handleSubmit} className="bg-bg rounded-2xl p-4 border border-surface-2 flex flex-col gap-3">
       <input value={nameEn} onChange={(e) => setNameEn(e.target.value)} placeholder="Category Name" required className="input-field" />
-
-      <ImageUploader
-        label="Category Photo (shown in carousel)"
-        preview={imagePreview}
-        onChange={handleImage}
-        onRemove={removeImage}
-        position={imagePosition}
-        onPositionChange={setImagePosition}
-      />
 
       {error && <p className="text-red-500 text-xs px-1">{error}</p>}
       <div className="flex gap-2">
@@ -78,12 +44,6 @@ function SortableCategory({ cat, onEdit, onDelete }) {
   return (
     <div ref={setNodeRef} style={style} className="bg-surface rounded-xl border border-surface-2 flex items-center gap-3 px-4 py-3">
       <span {...attributes} {...listeners} className="text-text-light cursor-grab active:cursor-grabbing text-lg select-none">⠿</span>
-
-      {cat.imageUrl && (
-        <div className="w-10 h-10 rounded-lg overflow-hidden flex-shrink-0">
-          <img src={cat.imageUrl} alt={cat.name_en} className="w-full h-full object-cover" />
-        </div>
-      )}
 
       <div className="flex-1 min-w-0">
         <p className="text-text font-medium text-sm">{cat.name_en}</p>

@@ -1,9 +1,10 @@
-// One-time tool: moves photos stored inside Firestore (base64 "data:" text)
-// to Vercel Blob and saves only their links. Safe to run more than once:
+// One-time tool: moves item and background photos stored inside Firestore
+// (base64 "data:" text) to Vercel Blob and saves only their links. Category
+// photos aren't shown on the menu, so they are removed instead. Safe to run more than once:
 // photos that are already links are skipped.
 // Open it at /admin/dashboard/migrate-images. It is not linked in the sidebar.
 import { useState } from 'react'
-import { collection, doc, getDocsFromServer, getDocFromServer, updateDoc } from 'firebase/firestore'
+import { collection, doc, getDocsFromServer, getDocFromServer, updateDoc, deleteField } from 'firebase/firestore'
 import { db } from '../../firebase/config'
 import { uploadImage } from '../../utils/uploadImage'
 
@@ -25,7 +26,6 @@ async function readAll() {
 
 function countPending(data) {
   let n = 0
-  data.categories.forEach((c) => { if (isData(c.imageUrl)) n++ })
   data.items.forEach((i) => {
     if (isData(i.imageUrl)) n++
     ;(i.variants || []).forEach((v) => { if (isData(v.imageUrl)) n++ })
@@ -52,6 +52,8 @@ export default function ImageMigration() {
     a.click()
     add(`Backup downloaded (${kb(json.length)}). Keep this file safe.`)
     add(`${countPending(data)} photos still need to be moved.`)
+    const catPhotos = data.categories.filter((c) => c.imageUrl).length
+    if (catPhotos) add(`${catPhotos} category photos will be removed (they aren't shown on the menu).`)
     setBackedUp(true)
   }
 
@@ -79,11 +81,11 @@ export default function ImageMigration() {
         }
       }
 
-      for (const c of data.categories) {
-        if (!isData(c.imageUrl)) continue
-        const url = await move(`Category: ${c.name_en}`, c.imageUrl, { folder: 'categories' })
-        if (url) await updateDoc(doc(db, 'categories', c.id), { imageUrl: url })
+      const withPhoto = data.categories.filter((c) => c.imageUrl || c.imagePosition)
+      for (const c of withPhoto) {
+        await updateDoc(doc(db, 'categories', c.id), { imageUrl: deleteField(), imagePosition: deleteField() })
       }
+      if (withPhoto.length) add(`✓ Removed photos from ${withPhoto.length} categories`)
 
       for (const item of data.items) {
         const changes = {}
