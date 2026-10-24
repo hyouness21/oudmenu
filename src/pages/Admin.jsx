@@ -9,6 +9,7 @@ import ExchangeRate from '../components/admin/ExchangeRate'
 import QRCodeSection from '../components/admin/QRCodeSection'
 import PasswordChange from '../components/admin/PasswordChange'
 import AppearanceManager from '../components/admin/AppearanceManager'
+import ImageMigration from '../components/admin/ImageMigration'
 
 export default function Admin() {
   const { user } = useAuth()
@@ -68,6 +69,7 @@ export default function Admin() {
           <Route path="qr" element={<QRCodeSection />} />
           <Route path="appearance" element={<AppearanceManager />} />
           <Route path="password" element={<PasswordChange />} />
+          <Route path="migrate-images" element={<ImageMigration />} />
         </Routes>
       </main>
     </div>

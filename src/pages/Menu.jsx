@@ -25,6 +25,8 @@ function HeroSection({ settings, settingsLoading }) {
             <img
               src={heroBg.imageUrl}
               alt=""
+              fetchpriority="high"
+              decoding="async"
               className="absolute inset-0 w-full h-full object-cover pointer-events-none"
               style={{ objectPosition: `${heroBg.imagePosition?.x ?? 50}% ${heroBg.imagePosition?.y ?? 50}%` }}
             />
@@ -103,6 +105,8 @@ function ItemCard({ item, index }) {
               key={selectedVariant}
               src={imageUrl}
               alt={item.name_en}
+              loading="lazy"
+              decoding="async"
               initial={{ opacity: 0, scale: 1.06 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.96 }}

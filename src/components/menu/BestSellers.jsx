@@ -22,6 +22,8 @@ function BestSellerCard({ item, index }) {
           <img
             src={imageUrl}
             alt={item.name_en}
+            loading="lazy"
+            decoding="async"
             className="w-full h-full object-cover"
             style={{ objectPosition: `${imagePosition?.x ?? 50}% ${imagePosition?.y ?? 50}%` }}
           />

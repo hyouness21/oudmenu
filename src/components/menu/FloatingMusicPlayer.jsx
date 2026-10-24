@@ -4,19 +4,20 @@ export default function FloatingMusicPlayer() {
   const [playing, setPlaying] = useState(false)
   const audioRef = useRef(null)
 
-  useEffect(() => {
-    const audio = new Audio('/music/small promo.mp3')
-    audio.loop = true
-    audioRef.current = audio
-    return () => { audio.pause() }
-  }, [])
+  // The music file (~1.4 MB) is only downloaded the first time someone taps play.
+  useEffect(() => () => { audioRef.current?.pause() }, [])
 
   const toggle = () => {
+    if (!audioRef.current) {
+      const audio = new Audio('/music/small promo.mp3')
+      audio.loop = true
+      audioRef.current = audio
+    }
     if (playing) {
       audioRef.current.pause()
       setPlaying(false)
     } else {
-      audioRef.current.play()
+      audioRef.current.play().catch(() => setPlaying(false))
       setPlaying(true)
     }
   }

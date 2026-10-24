@@ -4,7 +4,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useMenu } from '../../contexts/MenuContext'
-import { compressImage } from '../../utils/compressImage'
+import { uploadImage } from '../../utils/uploadImage'
 import ImageUploader from './ImageUploader'
 
 function CategoryForm({ initial, onSave, onCancel }) {
@@ -36,7 +36,7 @@ function CategoryForm({ initial, onSave, onCancel }) {
     try {
       let imageUrl = initial?.imageUrl ?? ''
       if (imageFile) {
-        imageUrl = await compressImage(imageFile)
+        imageUrl = await uploadImage(imageFile, { folder: 'categories' })
       } else if (!imagePreview) {
         imageUrl = ''
       }

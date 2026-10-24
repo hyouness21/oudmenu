@@ -4,7 +4,7 @@ import { DndContext, closestCenter, PointerSensor, useSensor, useSensors } from 
 import { SortableContext, useSortable, verticalListSortingStrategy, arrayMove } from '@dnd-kit/sortable'
 import { CSS } from '@dnd-kit/utilities'
 import { useMenu } from '../../contexts/MenuContext'
-import { compressImage } from '../../utils/compressImage'
+import { uploadImage } from '../../utils/uploadImage'
 import ImageUploader from './ImageUploader'
 
 const STATUS_OPTIONS = [
@@ -158,14 +158,14 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
         const processedVariants = await Promise.all(
           variants.map(async (v) => {
             let imageUrl = v.imageUrl
-            if (v._imageFile) imageUrl = await compressImage(v._imageFile)
+            if (v._imageFile) imageUrl = await uploadImage(v._imageFile)
             return { name: v.name, price: parseFloat(v.price), priceCurrency: v.priceCurrency, imageUrl, imagePosition: v.imagePosition }
           })
         )
         await onSave({ ...form, price: 0, imageUrl: '', variants: processedVariants })
       } else {
         let imageUrl = form.imageUrl
-        if (imageFile) imageUrl = await compressImage(imageFile)
+        if (imageFile) imageUrl = await uploadImage(imageFile)
         await onSave({ ...form, price: parseFloat(form.price), imageUrl, variants: [] })
       }
     } catch (err) {

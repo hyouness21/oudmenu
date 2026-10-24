@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { useMenu } from '../../contexts/MenuContext'
-import { compressImage } from '../../utils/compressImage'
+import { uploadImage } from '../../utils/uploadImage'
 import ImageUploader from './ImageUploader'
 
 export default function AppearanceManager() {
@@ -35,7 +35,7 @@ export default function AppearanceManager() {
     try {
       let imageUrl = heroBg.imageUrl ?? ''
       if (imageFile) {
-        imageUrl = await compressImage(imageFile, 1200, 0.82)
+        imageUrl = await uploadImage(imageFile, { folder: 'appearance', maxWidth: 1200, quality: 0.8 })
       } else if (!imagePreview) {
         imageUrl = ''
       }
