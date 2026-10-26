@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { AnimatePresence, motion } from 'framer-motion'
 import { useMenu } from '../contexts/MenuContext'
 import { useCurrency } from '../contexts/CurrencyContext'
@@ -10,6 +10,7 @@ import AboutSection from '../components/menu/AboutSection'
 import BestSellers from '../components/menu/BestSellers'
 import OudBoxPage from '../components/menu/OudBoxPage'
 import FloatingMusicPlayer from '../components/menu/FloatingMusicPlayer'
+import CategorySwitcher from '../components/menu/CategorySwitcher'
 import './menu.css'
 
 /* ── Hero ──────────────────────────────────────────────── */
@@ -218,6 +219,44 @@ function CategoryPage({ category, items, onBack }) {
 export default function Menu() {
   const { categories, items, loading: itemsLoading, categoriesLoading, settingsLoading, itemsByCategory, settings } = useMenu()
   const [selectedCategoryId, setSelectedCategoryId] = useState(null)
+  const [switcherOpen, setSwitcherOpen] = useState(false)
+
+  const selectedCategoryIdRef = useRef(null)
+  const switcherOpenRef = useRef(false)
+  useEffect(() => { selectedCategoryIdRef.current = selectedCategoryId }, [selectedCategoryId])
+  useEffect(() => { switcherOpenRef.current = switcherOpen }, [switcherOpen])
+
+  // Open from main page — push a history entry
+  const openCategory = (id) => {
+    history.pushState({ categoryId: id }, '')
+    setSelectedCategoryId(id)
+  }
+
+  // Switch via the switcher — replace current entry so back always goes home
+  const switchCategory = (id) => {
+    history.replaceState({ categoryId: id }, '')
+    setSelectedCategoryId(id)
+    window.scrollTo(0, 0)
+  }
+
+  // Back button in category pages
+  const goBack = () => history.back()
+
+  // Handle Android/browser back
+  useEffect(() => {
+    const handler = () => {
+      if (switcherOpenRef.current) {
+        setSwitcherOpen(false)
+        if (selectedCategoryIdRef.current) {
+          history.pushState({ categoryId: selectedCategoryIdRef.current }, '')
+        }
+      } else {
+        setSelectedCategoryId(null)
+      }
+    }
+    window.addEventListener('popstate', handler)
+    return () => window.removeEventListener('popstate', handler)
+  }, [])
 
   const selectedCategory = categories.find((c) => c.id === selectedCategoryId)
 
@@ -235,7 +274,7 @@ export default function Menu() {
                 categories={categories}
                 items={items}
                 loading={itemsLoading}
-                onBack={() => setSelectedCategoryId(null)}
+                onBack={goBack}
               />
             </div>
           ) : selectedCategoryId && selectedCategory ? (
@@ -244,7 +283,7 @@ export default function Menu() {
                 key="category"
                 category={selectedCategory}
                 items={itemsByCategory(selectedCategoryId)}
-                onBack={() => setSelectedCategoryId(null)}
+                onBack={goBack}
               />
             </div>
           ) : (
@@ -258,7 +297,7 @@ export default function Menu() {
               <CategoryHome
                 categories={categories}
                 loading={categoriesLoading}
-                onSelect={setSelectedCategoryId}
+                onSelect={openCategory}
               />
             </motion.div>
           )}
@@ -267,6 +306,17 @@ export default function Menu() {
 
       {!selectedCategoryId && <BestSellers items={items} />}
       {!selectedCategoryId && <AboutSection />}
+
+      {selectedCategoryId && (
+        <CategorySwitcher
+          categories={categories}
+          selectedCategoryId={selectedCategoryId}
+          open={switcherOpen}
+          setOpen={setSwitcherOpen}
+          onSwitch={switchCategory}
+        />
+      )}
+
       <FloatingMusicPlayer />
     </div>
   )
