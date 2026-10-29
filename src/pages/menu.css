@@ -4,3 +4,13 @@
   z-index: 0;
   isolation: isolate;
 }
+
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+
+@keyframes tl-steam {
+  0%   { transform: translateY(6px);   opacity: 0;   }
+  25%  { opacity: 0.8; }
+  100% { transform: translateY(-26px); opacity: 0;   }
+}

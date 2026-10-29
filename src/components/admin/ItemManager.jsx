@@ -101,6 +101,10 @@ function VariantEditor({ variants, onChange }) {
 
 function ItemForm({ initial, categories, onSave, onCancel }) {
   const hasInitialVariants = initial?.variants?.length > 0
+  const { items: allItems } = useMenu()
+  const otherItems = allItems.filter((i) => i.id !== initial?.id)
+  const [pairId0, setPairId0] = useState(initial?.pairIds?.[0] ?? '')
+  const [pairId1, setPairId1] = useState(initial?.pairIds?.[1] ?? '')
 
   const [form, setForm] = useState({
     name_en: initial?.name_en ?? '',
@@ -162,11 +166,11 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
             return { name: v.name, price: parseFloat(v.price), priceCurrency: v.priceCurrency, imageUrl, imagePosition: v.imagePosition }
           })
         )
-        await onSave({ ...form, price: 0, imageUrl: '', variants: processedVariants })
+        await onSave({ ...form, price: 0, imageUrl: '', variants: processedVariants, pairIds: [pairId0, pairId1].filter(Boolean) })
       } else {
         let imageUrl = form.imageUrl
         if (imageFile) imageUrl = await uploadImage(imageFile)
-        await onSave({ ...form, price: parseFloat(form.price), imageUrl, variants: [] })
+        await onSave({ ...form, price: parseFloat(form.price), imageUrl, variants: [], pairIds: [pairId0, pairId1].filter(Boolean) })
       }
     } catch (err) {
       setError(err.message || 'Upload failed. Check Firebase Storage rules.')
@@ -242,15 +246,19 @@ function ItemForm({ initial, categories, onSave, onCancel }) {
         <span className="text-sm text-text">Include in OUD BOX 📦</span>
       </label>
 
-      <label className="flex items-center gap-2 cursor-pointer select-none">
-        <input
-          type="checkbox"
-          checked={form.isOudBox}
-          onChange={(e) => setForm((f) => ({ ...f, isOudBox: e.target.checked }))}
-          className="w-4 h-4 accent-brown"
-        />
-        <span className="text-sm text-text">Include in OUD BOX 📦</span>
-      </label>
+      <div>
+        <p className="text-xs text-text-muted mb-1">Goes well with (optional)</p>
+        <div className="grid grid-cols-2 gap-2">
+          <select value={pairId0} onChange={(e) => setPairId0(e.target.value)} className="input-field">
+            <option value="">None</option>
+            {otherItems.map((i) => <option key={i.id} value={i.id}>{i.name_en}</option>)}
+          </select>
+          <select value={pairId1} onChange={(e) => setPairId1(e.target.value)} className="input-field">
+            <option value="">None</option>
+            {otherItems.map((i) => <option key={i.id} value={i.id}>{i.name_en}</option>)}
+          </select>
+        </div>
+      </div>
 
       {error && <p className="text-red-500 text-xs px-1">{error}</p>}
       <div className="flex gap-2">
@@ -276,7 +284,6 @@ function SortableItem({ item, categories, onEdit, onDelete }) {
         <div className="flex items-center gap-2">
           <p className="text-text font-medium text-sm truncate">{item.name_en}</p>
           {item.isBestSeller && <span className="text-xs">⭐</span>}
-          {item.isOudBox && <span className="text-xs">📦</span>}
           {item.isOudBox && <span className="text-xs">📦</span>}
           {hasVariants && <span className="text-xs text-gold bg-gold/10 px-1.5 py-0.5 rounded-full">variants</span>}
           <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${statusColors[item.status]}`}>

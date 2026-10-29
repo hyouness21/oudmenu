@@ -7,10 +7,17 @@ import CategoryCarousel from '../components/menu/CategoryCarousel'
 import DallahDecoration from '../components/menu/DallahDecoration'
 import IslamicPattern from '../components/shared/IslamicPattern'
 import AboutSection from '../components/menu/AboutSection'
+import VisitSection from '../components/menu/VisitSection'
 import BestSellers from '../components/menu/BestSellers'
 import OudBoxPage from '../components/menu/OudBoxPage'
+import OudBoxBanner from '../components/menu/OudBoxBanner'
+import BestSellersPage from '../components/menu/BestSellersPage'
+import MenuSearch from '../components/menu/MenuSearch'
 import FloatingMusicPlayer from '../components/menu/FloatingMusicPlayer'
 import CategorySwitcher from '../components/menu/CategorySwitcher'
+import ItemSheet from '../components/menu/ItemSheet'
+import OpenBadge from '../components/menu/OpenBadge'
+import TeaLoader from '../components/menu/TeaLoader'
 import './menu.css'
 
 /* ── Hero ──────────────────────────────────────────────── */
@@ -47,6 +54,7 @@ function HeroSection({ settings, settingsLoading }) {
       )}
 
       <div className="absolute inset-0 z-10 flex flex-col justify-end pb-6 px-8" style={{ fontFamily: 'Philosopher, serif' }}>
+        <OpenBadge />
         <h1 className="text-white text-3xl font-normal mb-0 leading-none">
           Welcome To OUD
         </h1>
@@ -79,12 +87,20 @@ function CategoryHome({ categories, loading, onSelect }) {
 }
 
 /* ── Item card (2-col grid) ────────────────────────────── */
-function ItemCard({ item, index }) {
+function ItemCard({ item, index, highlighted, onOpenSheet }) {
   const { format } = useCurrency()
   const isUnavailable = item.status === 'unavailable'
   const isComingSoon = item.status === 'coming_soon'
   const hasVariants = item.variants?.length > 0
   const [selectedVariant, setSelectedVariant] = useState(0)
+  const [isHighlighted, setIsHighlighted] = useState(false)
+
+  useEffect(() => {
+    if (!highlighted) return
+    setIsHighlighted(true)
+    const t = setTimeout(() => setIsHighlighted(false), 1500)
+    return () => clearTimeout(t)
+  }, [highlighted])
 
   const active = hasVariants ? item.variants[selectedVariant] : null
   const imageUrl = active ? active.imageUrl : item.imageUrl
@@ -94,10 +110,16 @@ function ItemCard({ item, index }) {
 
   return (
     <motion.div
+      id={`item-${item.id}`}
       initial={{ opacity: 0, y: 10 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.25, delay: index * 0.07 }}
       className={`bg-white rounded-2xl overflow-hidden shadow-sm border border-surface-2 flex flex-col ${isUnavailable ? 'opacity-40' : ''}`}
+      onClick={onOpenSheet ? () => onOpenSheet(item, selectedVariant) : undefined}
+      style={{
+        cursor: onOpenSheet ? 'pointer' : undefined,
+        ...(isHighlighted ? { outline: '2.5px solid #C9A84C', outlineOffset: '2px' } : {}),
+      }}
     >
       <div className="w-full aspect-square bg-surface-2 flex-shrink-0 relative overflow-hidden">
         <AnimatePresence mode="wait">
@@ -145,7 +167,7 @@ function ItemCard({ item, index }) {
             {item.variants.map((v, i) => (
               <button
                 key={i}
-                onClick={() => setSelectedVariant(i)}
+                onClick={(e) => { e.stopPropagation(); setSelectedVariant(i) }}
                 className={`text-xs px-2 py-0.5 rounded-full border transition-all ${selectedVariant === i ? 'bg-brown text-white border-brown' : 'border-brown/30 text-brown hover:bg-brown/5'}`}
               >
                 {v.name}
@@ -177,7 +199,16 @@ function ItemCard({ item, index }) {
 }
 
 /* ── Category items page ───────────────────────────────── */
-function CategoryPage({ category, items, onBack }) {
+function CategoryPage({ category, items, onBack, highlightId, onHighlightDone, onOpenSheet }) {
+  useEffect(() => {
+    if (!highlightId) return
+    const t = setTimeout(() => {
+      document.getElementById(`item-${highlightId}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+      onHighlightDone?.()
+    }, 350)
+    return () => clearTimeout(t)
+  }, [highlightId])
+
   return (
     <motion.div
       initial={{ opacity: 0, x: 30 }}
@@ -206,7 +237,7 @@ function CategoryPage({ category, items, onBack }) {
         ) : (
           <div className="grid grid-cols-2 gap-3">
             {items.map((item, i) => (
-              <ItemCard key={item.id} item={item} index={i} />
+              <ItemCard key={item.id} item={item} index={i} highlighted={item.id === highlightId} onOpenSheet={onOpenSheet} />
             ))}
           </div>
         )}
@@ -215,16 +246,120 @@ function CategoryPage({ category, items, onBack }) {
   )
 }
 
+/* ── Search results ────────────────────────────────────── */
+function SearchResults({ query, items, categories, onSelectItem, onClearSearch }) {
+  const { format } = useCurrency()
+  const q = query.trim().toLowerCase()
+
+  const results = items.filter((item) => {
+    if (item.status === 'unavailable') return false
+    const cat = categories.find((c) => c.id === item.categoryId)
+    return [item.name_en, item.name_ar, item.description_en, cat?.name_en, cat?.name_ar]
+      .filter(Boolean)
+      .some((field) => field.toLowerCase().includes(q))
+  })
+
+  return (
+    <div style={{ padding: '12px 16px 80px' }}>
+      <p style={{ fontSize: 13, color: '#5F6430', fontFamily: 'Lato, sans-serif', margin: '0 0 12px' }}>
+        {results.length} result{results.length !== 1 ? 's' : ''} for &ldquo;{query.trim()}&rdquo;
+      </p>
+
+      {results.length === 0 ? (
+        <div style={{ textAlign: 'center', paddingTop: 32 }}>
+          <p style={{ color: '#5F6430', fontSize: 14, fontFamily: 'Lato, sans-serif', margin: '0 0 12px' }}>
+            Nothing found for &ldquo;{query.trim()}&rdquo;. Try another word.
+          </p>
+          <button
+            onClick={onClearSearch}
+            style={{ color: '#5C7249', fontSize: 14, fontFamily: 'Lato, sans-serif', background: 'none', border: 'none', cursor: 'pointer', textDecoration: 'underline' }}
+          >
+            Clear search
+          </button>
+        </div>
+      ) : results.map((item) => {
+        const cat = categories.find((c) => c.id === item.categoryId)
+        const first = item.variants?.[0]
+        const imageUrl = first ? first.imageUrl : item.imageUrl
+        const imagePosition = first ? first.imagePosition : item.imagePosition
+        const price = first ? first.price : item.price
+        const priceCurrency = first ? first.priceCurrency : item.priceCurrency
+
+        return (
+          <button
+            key={item.id}
+            onClick={() => onSelectItem(item)}
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: 12,
+              width: '100%',
+              minHeight: 64,
+              background: '#fff',
+              borderRadius: 16,
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              padding: '8px 14px',
+              marginBottom: 10,
+              border: 'none',
+              cursor: 'pointer',
+              textAlign: 'left',
+              WebkitTapHighlightColor: 'transparent',
+            }}
+          >
+            <div style={{ width: 56, height: 56, borderRadius: 12, overflow: 'hidden', background: '#CED8C7', flexShrink: 0 }}>
+              {imageUrl && (
+                <img
+                  src={imageUrl}
+                  alt={item.name_en}
+                  loading="lazy"
+                  style={{
+                    width: '100%', height: '100%', objectFit: 'cover',
+                    objectPosition: `${imagePosition?.x ?? 50}% ${imagePosition?.y ?? 50}%`,
+                    display: 'block',
+                  }}
+                />
+              )}
+            </div>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{
+                fontFamily: 'Georgia, serif', fontSize: 15, color: '#3D2B1F',
+                margin: '0 0 3px', overflow: 'hidden', fontWeight: 'normal',
+                display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical',
+              }}>
+                {item.name_en}
+              </p>
+              {cat && (
+                <p style={{ fontSize: 12, color: '#5C7249', margin: 0, fontFamily: 'Lato, sans-serif' }}>
+                  {cat.name_en}
+                </p>
+              )}
+            </div>
+            <p style={{ fontWeight: 'bold', fontSize: 13, color: '#2D1E14', margin: 0, flexShrink: 0, fontFamily: 'Lato, sans-serif' }}>
+              {format(price, priceCurrency)}
+            </p>
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 /* ── Main ──────────────────────────────────────────────── */
 export default function Menu() {
   const { categories, items, loading: itemsLoading, categoriesLoading, settingsLoading, itemsByCategory, settings } = useMenu()
   const [selectedCategoryId, setSelectedCategoryId] = useState(null)
   const [switcherOpen, setSwitcherOpen] = useState(false)
+  const [query, setQuery] = useState('')
+  const [pendingHighlight, setPendingHighlight] = useState(null)
+  const [sheetItem, setSheetItem] = useState(null)
+  const [sheetVariant, setSheetVariant] = useState(0)
 
   const selectedCategoryIdRef = useRef(null)
   const switcherOpenRef = useRef(false)
+  const sheetItemRef = useRef(null)
   useEffect(() => { selectedCategoryIdRef.current = selectedCategoryId }, [selectedCategoryId])
   useEffect(() => { switcherOpenRef.current = switcherOpen }, [switcherOpen])
+  useEffect(() => { sheetItemRef.current = sheetItem }, [sheetItem])
 
   // Open from main page — push a history entry
   const openCategory = (id) => {
@@ -242,10 +377,31 @@ export default function Menu() {
   // Back button in category pages
   const goBack = () => history.back()
 
+  const openSheet = (item, variantIndex = 0) => {
+    history.pushState({ sheet: item.id }, '')
+    setSheetItem(item)
+    setSheetVariant(variantIndex)
+  }
+  const closeSheet = () => history.back()
+
+  // Clear search when returning home
+  useEffect(() => {
+    if (selectedCategoryId === null) setQuery('')
+  }, [selectedCategoryId])
+
+  // Open a category from a search result and schedule a highlight
+  const handleSelectItem = (item) => {
+    setPendingHighlight(item.id)
+    setQuery('')
+    openCategory(item.categoryId)
+  }
+
   // Handle Android/browser back
   useEffect(() => {
     const handler = () => {
-      if (switcherOpenRef.current) {
+      if (sheetItemRef.current) {
+        setSheetItem(null)
+      } else if (switcherOpenRef.current) {
         setSwitcherOpen(false)
         if (selectedCategoryIdRef.current) {
           history.pushState({ categoryId: selectedCategoryIdRef.current }, '')
@@ -262,12 +418,28 @@ export default function Menu() {
 
   return (
     <div className="min-h-screen bg-white">
+      <TeaLoader
+        categoriesLoading={categoriesLoading}
+        itemsLoading={itemsLoading}
+        settingsLoading={settingsLoading}
+      />
       <MenuHeader />
       {!selectedCategoryId && <HeroSection settings={settings} settingsLoading={settingsLoading} />}
+      {!selectedCategoryId && <MenuSearch query={query} setQuery={setQuery} />}
 
       <div id="menu-section" className="menu-content">
         <AnimatePresence mode="wait">
-          {selectedCategoryId === '__oudbox__' ? (
+          {selectedCategoryId === '__bestsellers__' ? (
+            <div className="min-h-screen bg-[#D8DFD2]">
+              <BestSellersPage
+                key="bestsellers"
+                items={items}
+                categories={categories}
+                onBack={goBack}
+                onOpenSheet={openSheet}
+              />
+            </div>
+          ) : selectedCategoryId === '__oudbox__' ? (
             <div className="min-h-screen bg-[#D8DFD2]">
               <OudBoxPage
                 key="oudbox"
@@ -275,6 +447,7 @@ export default function Menu() {
                 items={items}
                 loading={itemsLoading}
                 onBack={goBack}
+                onOpenSheet={openSheet}
               />
             </div>
           ) : selectedCategoryId && selectedCategory ? (
@@ -284,8 +457,27 @@ export default function Menu() {
                 category={selectedCategory}
                 items={itemsByCategory(selectedCategoryId)}
                 onBack={goBack}
+                highlightId={pendingHighlight}
+                onHighlightDone={() => setPendingHighlight(null)}
+                onOpenSheet={openSheet}
               />
             </div>
+          ) : query ? (
+            <motion.div
+              key="search"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.15 }}
+            >
+              <SearchResults
+                query={query}
+                items={items}
+                categories={categories}
+                onSelectItem={handleSelectItem}
+                onClearSearch={() => setQuery('')}
+              />
+            </motion.div>
           ) : (
             <motion.div
               key="home"
@@ -294,6 +486,8 @@ export default function Menu() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.2 }}
             >
+              <BestSellers items={items} onSeeAll={() => openCategory('__bestsellers__')} />
+              <OudBoxBanner items={items} onOpen={() => openCategory('__oudbox__')} />
               <CategoryHome
                 categories={categories}
                 loading={categoriesLoading}
@@ -304,8 +498,7 @@ export default function Menu() {
         </AnimatePresence>
       </div>
 
-      {!selectedCategoryId && <BestSellers items={items} />}
-      {!selectedCategoryId && <AboutSection />}
+      {!selectedCategoryId && !query && <AboutSection afterAbout={<VisitSection />} />}
 
       {selectedCategoryId && (
         <CategorySwitcher
@@ -318,6 +511,18 @@ export default function Menu() {
       )}
 
       <FloatingMusicPlayer />
+
+      <AnimatePresence>
+        {sheetItem && (
+          <ItemSheet
+            key="item-sheet"
+            item={sheetItem}
+            initialVariant={sheetVariant}
+            items={items}
+            onClose={closeSheet}
+          />
+        )}
+      </AnimatePresence>
     </div>
   )
 }

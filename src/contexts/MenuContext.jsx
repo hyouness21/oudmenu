@@ -16,25 +16,41 @@ export function MenuProvider({ children }) {
   const [settingsLoading, setSettingsLoading] = useState(true)
 
   useEffect(() => {
+    // Fallback: if server data hasn't arrived within 4 s (offline / very slow),
+    // unlock the loading flags so the menu still opens with cached data.
+    const t1 = setTimeout(() => setCategoriesLoading(false), 4000)
+    const t2 = setTimeout(() => setLoading(false), 4000)
+    const t3 = setTimeout(() => setSettingsLoading(false), 4000)
+
     const unsub1 = onSnapshot(
       query(collection(db, 'categories'), orderBy('order')),
+      { includeMetadataChanges: true },
       (snap) => {
         setCategories(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
-        setCategoriesLoading(false)
+        if (!snap.metadata.fromCache) { clearTimeout(t1); setCategoriesLoading(false) }
       }
     )
     const unsub2 = onSnapshot(
       query(collection(db, 'items'), orderBy('order')),
+      { includeMetadataChanges: true },
       (snap) => {
         setItems(snap.docs.map((d) => ({ id: d.id, ...d.data() })))
-        setLoading(false)
+        if (!snap.metadata.fromCache) { clearTimeout(t2); setLoading(false) }
       }
     )
-    const unsub3 = onSnapshot(doc(db, 'settings', 'appearance'), (snap) => {
-      if (snap.exists()) setSettings(snap.data())
-      setSettingsLoading(false)
-    })
-    return () => { unsub1(); unsub2(); unsub3() }
+    const unsub3 = onSnapshot(
+      doc(db, 'settings', 'appearance'),
+      { includeMetadataChanges: true },
+      (snap) => {
+        if (snap.exists()) setSettings(snap.data())
+        if (!snap.metadata.fromCache) { clearTimeout(t3); setSettingsLoading(false) }
+      }
+    )
+
+    return () => {
+      clearTimeout(t1); clearTimeout(t2); clearTimeout(t3)
+      unsub1(); unsub2(); unsub3()
+    }
   }, [])
 
   const addCategory = (data) =>

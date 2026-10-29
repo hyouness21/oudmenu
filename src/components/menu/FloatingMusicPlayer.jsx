@@ -31,7 +31,7 @@ export default function FloatingMusicPlayer() {
         <img
           src="/oud-icon-colored.png"
           alt="music"
-          className={`w-10 h-10 object-contain ${playing ? 'animate-pulse' : ''}`}
+          className={`w-14 h-14 object-contain ${playing ? 'animate-pulse' : ''}`}
         />
       </button>
     </div>

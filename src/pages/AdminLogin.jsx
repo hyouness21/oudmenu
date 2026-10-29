@@ -56,7 +56,7 @@ export default function AdminLogin() {
                 required
                 autoComplete="username"
                 className="w-full bg-bg border border-surface-2 rounded-xl px-4 py-3 text-text text-sm focus:outline-none focus:border-gold focus:ring-1 focus:ring-gold/30 transition-all"
-                placeholder="admin"
+                placeholder="Your username"
               />
             </div>
 
